@@ -1,61 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CSINGH — Online Store</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CSINGH — Online Store</title>
 <style>
-:root{--navy:#14243d;--gold:#f4bd55;--bg:#f5f7fa;--muted:#697586}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#172033}
-header{background:var(--navy);color:white;padding:16px 5%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:3}
-.logo{font-size:25px;font-weight:900;letter-spacing:2px}.cart{border:0;border-radius:30px;padding:11px 17px;background:var(--gold);font-weight:bold;cursor:pointer}
-.hero{padding:54px 6%;background:linear-gradient(115deg,#14243d,#31577e);color:white}.hero h1{font-size:clamp(34px,6vw,58px);margin:0 0 10px}.hero p{max-width:540px;line-height:1.6;color:#e3eaf2}.hero a{display:inline-block;background:var(--gold);padding:13px 20px;border-radius:8px;text-decoration:none;color:#172033;font-weight:bold;margin-top:10px}
-main{max-width:1120px;margin:auto;padding:35px 5%}.heading{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:10px}.heading h2{margin:0 0 5px}.muted{color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:22px}.card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 4px 18px #14243d10}.card img{width:100%;height:205px;object-fit:cover;background:#e8edf3}.info{padding:15px}.info h3{margin:0 0 7px}.price{font-size:19px;font-weight:800;color:var(--navy)}.add,.primary{width:100%;padding:12px;border:0;border-radius:8px;background:var(--navy);color:white;font-weight:bold;cursor:pointer;margin-top:12px}
-footer{background:#101a2b;color:#e0e6ef;text-align:center;padding:27px 5%;line-height:1.7}
-.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:5;align-items:center;justify-content:center;padding:14px}.panel{background:white;border-radius:15px;padding:22px;width:min(540px,100%);max-height:92vh;overflow:auto}.top{display:flex;justify-content:space-between;align-items:center}.close{border:0;border-radius:50%;width:34px;height:34px;font-size:20px;cursor:pointer}
-.line{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #e8ebef}label{display:block;font-size:14px;font-weight:bold;margin-top:10px}input,textarea{width:100%;padding:12px;border:1px solid #ccd3dd;border-radius:8px;margin-top:6px;font:inherit}
-.qrbox{border:1px dashed #aeb8c6;border-radius:12px;padding:18px;text-align:center;margin:12px 0;background:#fafbfd}.qrplaceholder{width:160px;height:160px;border:2px dashed #9aa6b5;margin:10px auto;display:grid;place-items:center;color:#687589;font-size:13px;padding:10px}.small{font-size:12px;color:var(--muted);line-height:1.5}.paybtn{display:block;text-align:center;background:#16834a;color:white;padding:12px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:10px}
-@media(max-width:600px){.hero{padding:40px 6%}.card img{height:185px}}
-</style></head>
-<body>
+:root{--navy:#14243d;--gold:#f4bd55;--bg:#f5f7fa;--muted:#697586}*{box-sizing:border-box}body{margin:0;font-family:Arial;background:var(--bg);color:#172033}header{background:var(--navy);color:white;padding:16px 5%;display:flex;justify-content:space-between;position:sticky;top:0}.logo{font-size:25px;font-weight:900;letter-spacing:2px}.cart{border:0;border-radius:30px;padding:11px 17px;background:var(--gold);font-weight:bold;cursor:pointer}.hero{padding:54px 6%;background:linear-gradient(115deg,#14243d,#1768d4);color:white}.hero h1{font-size:clamp(34px,6vw,58px);margin:0}.hero p{line-height:1.6}.hero a{display:inline-block;background:var(--gold);padding:13px 20px;border-radius:8px;text-decoration:none;color:#172033;font-weight:bold}main{max-width:1120px;margin:auto;padding:35px 5%}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:22px}.card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 4px 18px #14243d10}.card img{width:100%;height:205px;object-fit:cover;background:#e8edf3}.info{padding:15px}.price{font-size:19px;font-weight:800;color:var(--navy)}.add,.primary{width:100%;padding:12px;border:0;border-radius:8px;background:var(--navy);color:white;font-weight:bold;cursor:pointer;margin-top:12px}footer{background:#101a2b;color:white;text-align:center;padding:25px}.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:5;align-items:center;justify-content:center;padding:14px}.panel{background:white;border-radius:15px;padding:22px;width:min(540px,100%);max-height:92vh;overflow:auto}.line{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #eee}label{display:block;margin-top:10px;font-weight:bold}input,textarea{width:100%;padding:12px;border:1px solid #ccd3dd;border-radius:8px;margin-top:6px;font:inherit}.small{font-size:12px;color:var(--muted)}@media(max-width:600px){.hero{padding:40px 6%}}
+</style></head><body>
 <header><div class="logo">CSINGH</div><button class="cart" onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button></header>
 <section class="hero"><h1>Shop smart. Shop CSINGH.</h1><p>Discover our collection and order in a few easy steps. Your store, your style.</p><a href="#products">Explore products</a></section>
-<main id="products"><div class="heading"><div><h2>Featured products</h2><div class="muted">A sample storefront — replace demo items with your products.</div></div></div><div class="grid" id="grid"></div></main>
-<footer><b>CSINGH</b><br>Online Store<br><span class="small">Add your verified business contact, shipping, returns and privacy details before publishing.</span></footer>
-
-<div class="overlay" id="overlay" onclick="if(event.target===this)hideCart()"><section class="panel">
-<div class="top"><h2>Checkout</h2><button class="close" onclick="hideCart()">×</button></div>
-<div id="items"></div><h3 id="total">Total: ₹0</h3>
-<label>Full name</label><input id="name" placeholder="Your name">
-<label>Mobile number</label><input id="mobile" inputmode="tel" placeholder="10-digit mobile number">
-<label>Delivery address</label><textarea id="address" rows="2" placeholder="Full delivery address"></textarea>
-<h3>Pay using UPI</h3>
-<div class="qrbox"><b>Scan merchant QR</b><div class="qrplaceholder">Your merchant QR image goes here</div><div class="small">Replace this placeholder with your official merchant QR image.</div></div>
-<div><b>UPI ID:</b> <span id="upiText">your-upi-id@bank</span> <button onclick="copyUpi()">Copy</button></div>
-<p class="small">After paying, verify the transaction in your bank/merchant app. This demo website cannot automatically confirm payment.</p>
-<button class="primary" onclick="placeOrder()">Send order details on WhatsApp</button>
-<p class="small">WhatsApp ordering also needs your store number to be added in the website settings.</p>
-</section></div>
-<script>
-// STORE SETTINGS — replace these demo values before publishing.
-const STORE_WHATSAPP = "91XXXXXXXXXX"; // digits only, with country code
-const MERCHANT_UPI_ID = "your-upi-id@bank"; // replace with your verified merchant UPI ID
-// Replace qrImage with the path to your merchant QR image, e.g. "merchant-qr.png".
-const qrImage = "";
-const products=[
-{id:1,name:"Sample Product 1",price:499,image:"https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=700",desc:"Replace with your product details"},
-{id:2,name:"Sample Product 2",price:699,image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700",desc:"Replace with your product details"},
-{id:3,name:"Sample Product 3",price:899,image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=700",desc:"Replace with your product details"}
-];
-let cart=[];
-const money=n=>"₹"+n.toLocaleString("en-IN");
-function draw(){document.getElementById("grid").innerHTML=products.map(p=>`<article class="card"><img src="${p.image}" alt="${p.name}"><div class="info"><h3>${p.name}</h3><p class="muted">${p.desc}</p><div class="price">${money(p.price)}</div><button class="add" onclick="add(${p.id})">Add to cart</button></div></article>`).join("");}
-function add(id){let x=cart.find(i=>i.id===id);x?x.qty++:cart.push({id,qty:1});showCart();}
-function showCart(){document.getElementById("overlay").style.display="flex";refresh();}
-function hideCart(){document.getElementById("overlay").style.display="none";}
-function refresh(){document.getElementById("count").textContent=cart.reduce((s,x)=>s+x.qty,0);document.getElementById("items").innerHTML=cart.length?cart.map(x=>{let p=products.find(y=>y.id===x.id);return `<div class="line"><span>${p.name} × ${x.qty}</span><b>${money(p.price*x.qty)}</b><button onclick="removeItem(${x.id})">Remove</button></div>`}).join(""):"Your cart is empty.";let total=cart.reduce((s,x)=>s+products.find(p=>p.id===x.id).price*x.qty,0);document.getElementById("total").textContent="Total: "+money(total);document.getElementById("upiText").textContent=MERCHANT_UPI_ID;document.querySelector(".qrplaceholder").innerHTML=qrImage?`<img src="${qrImage}" alt="Merchant UPI QR" style="width:100%;height:100%;object-fit:contain">`:"Your merchant QR image goes here";}
-function removeItem(id){cart=cart.filter(x=>x.id!==id);refresh();}
-function copyUpi(){navigator.clipboard?.writeText(MERCHANT_UPI_ID).then(()=>alert("UPI ID copied")).catch(()=>alert("UPI ID: "+MERCHANT_UPI_ID));}
-function placeOrder(){if(!cart.length){alert("Cart is empty.");return;}let n=document.getElementById("name").value.trim(),m=document.getElementById("mobile").value.trim(),a=document.getElementById("address").value.trim();if(!n||!m||!a){alert("Please fill in all delivery details.");return;}if(STORE_WHATSAPP.includes("X")){alert("Store owner: add your WhatsApp number in STORE_WHATSAPP first.");return;}let lines=cart.map(x=>{let p=products.find(y=>y.id===x.id);return `${p.name} x ${x.qty} = ${money(p.price*x.qty)}`}).join("\n");let t=cart.reduce((s,x)=>s+products.find(p=>p.id===x.id).price*x.qty,0);let msg=`CSINGH order\nName: ${n}\nMobile: ${m}\nAddress: ${a}\n\n${lines}\nTotal: ${money(t)}\nPayment: customer to confirm separately`;window.open("https://wa.me/"+STORE_WHATSAPP+"?text="+encodeURIComponent(msg),"_blank");}
-draw();refresh();
+<main id="products"><h2>Featured products</h2><p id="loadMessage" class="small">Loading products…</p><div class="grid" id="grid"></div></main><footer><b>CSINGH</b><br>Online Store · <a href="./admin.html" style="color:white">Admin</a></footer>
+<div class="overlay" id="overlay" onclick="if(event.target===this)hideCart()"><section class="panel"><div style="display:flex;justify-content:space-between"><h2>Checkout</h2><button onclick="hideCart()">×</button></div><div id="items"></div><h3 id="total">Total: ₹0</h3><label>Full name</label><input id="name" placeholder="Your name"><label>Mobile number</label><input id="mobile" placeholder="10-digit mobile number"><label>Delivery address</label><textarea id="address"></textarea><p class="small">UPI payment and order confirmation need to be configured separately.</p><button class="primary" onclick="placeOrder()">Send order details on WhatsApp</button></section></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+/* Paste the same Project URL and anon/publishable key used in admin.html.
+   Never use service_role/secret key in public browser code. */
+const SUPABASE_URL="PASTE_YOUR_SUPABASE_PROJECT_URL",SUPABASE_ANON_KEY="PASTE_YOUR_SUPABASE_ANON_KEY";
+const STORE_WHATSAPP="91XXXXXXXXXX";const money=n=>"₹"+Number(n||0).toLocaleString("en-IN");const $=id=>document.getElementById(id);const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let db,products=[],cart=[];
+async function load(){if(SUPABASE_URL.startsWith("PASTE_")||SUPABASE_ANON_KEY.startsWith("PASTE_")){$("loadMessage").textContent="Supabase setup required: configure the URL and anon key in index.html.";return}db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let {data,error}=await db.from("products").select("id,name,description,price,category,image_url,stock,is_active").eq("is_active",true).order("created_at",{ascending:false});if(error){$("loadMessage").textContent="Could not load products: "+error.message;return}products=data||[];$("loadMessage").textContent=products.length?products.length+" product(s) available.":"No products yet.";draw()}
+function draw(){$("grid").innerHTML=products.map(p=>`<article class="card"><img src="${esc(p.image_url||"")}" alt="${esc(p.name)}"><div class="info"><h3>${esc(p.name)}</h3><p class="small">${esc(p.description||p.category||"")}</p><div class="price">${money(p.price)}</div><button class="add" onclick="add(${Number(p.id)})" ${Number(p.stock||0)<=0?"disabled":""}>${Number(p.stock||0)<=0?"Out of stock":"Add to cart"}</button></div></article>`).join("")}
+function add(id){let p=products.find(x=>Number(x.id)===id);if(!p)return;let x=cart.find(y=>y.id===id);x?x.qty++:cart.push({id,qty:1});showCart()}
+function showCart(){$("overlay").style.display="flex";refresh()}function hideCart(){$("overlay").style.display="none"}
+function refresh(){$("count").textContent=cart.reduce((s,x)=>s+x.qty,0);$("items").innerHTML=cart.length?cart.map(x=>{let p=products.find(y=>Number(y.id)===x.id);return `<div class="line"><span>${esc(p.name)} × ${x.qty}</span><b>${money(Number(p.price)*x.qty)}</b><button onclick="removeItem(${x.id})">Remove</button></div>`}).join(""):"Your cart is empty.";let total=cart.reduce((s,x)=>s+Number(products.find(p=>Number(p.id)===x.id).price)*x.qty,0);$("total").textContent="Total: "+money(total)}
+function removeItem(id){cart=cart.filter(x=>x.id!==id);refresh()}
+function placeOrder(){if(!cart.length)return alert("Cart is empty.");let n=$("name").value.trim(),m=$("mobile").value.trim(),a=$("address").value.trim();if(!n||!/^\d{10}$/.test(m)||!a)return alert("Enter name, valid 10-digit mobile and delivery address.");if(STORE_WHATSAPP.includes("X"))return alert("Store WhatsApp number is not configured.");let lines=cart.map(x=>{let p=products.find(y=>Number(y.id)===x.id);return `${p.name} x ${x.qty} = ${money(p.price*x.qty)}`}).join("\n");let total=cart.reduce((s,x)=>s+Number(products.find(p=>Number(p.id)===x.id).price)*x.qty,0);let text=`CSINGH order\nName: ${n}\nMobile: ${m}\nAddress: ${a}\n\n${lines}\nTotal: ${money(total)}`;window.open("https://wa.me/"+STORE_WHATSAPP+"?text="+encodeURIComponent(text),"_blank")}
+load();
 </script></body></html>
