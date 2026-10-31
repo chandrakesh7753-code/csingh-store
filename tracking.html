@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Track Order | CSINGH Store</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f5f9;font-family:Arial;color:#172033}
+header{background:#1769d2;color:white;padding:18px;text-align:center}
+header a{color:white;text-decoration:none}
+main{max-width:480px;margin:35px auto;padding:15px}
+.card{background:white;padding:24px;border-radius:14px;box-shadow:0 4px 20px #0001}
+h2{margin-top:0}
+label{display:block;font-weight:bold;margin:15px 0 6px}
+input{width:100%;padding:13px;border:1px solid #ccd3dd;border-radius:8px;font-size:16px}
+button{width:100%;padding:13px;background:#1769d2;color:white;border:0;border-radius:8px;font-size:16px;font-weight:bold;margin-top:18px}
+#result{margin-top:20px;padding:15px;border-radius:9px;background:#eff6ff;display:none}
+#status{font-size:21px;font-weight:bold;color:#1769d2}
+.small{color:#667085;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<h2>CSINGH Store</h2>
+<a href="./index.html">← Back to Shopping</a>
+</header>
+<main>
+<div class="card">
+<h2>Track Your Order</h2>
+<p class="small">Enter your Order ID and the mobile number used when placing the order.</p>
+
+<label>Order ID</label>
+<input id="orderId" type="number" min="1" placeholder="Enter Order ID">
+
+<label>Mobile Number</label>
+<input id="mobile" type="tel" inputmode="numeric" maxlength="10" placeholder="Enter 10-digit mobile number">
+
+<button id="track">Track Order</button>
+
+<div id="result">
+<p id="status"></p>
+<p id="date" class="small"></p>
+</div>
+<p id="message" class="small"></p>
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const db=supabase.createClient(
+ "https://witjuwpraoycphopccnf.supabase.co",
+ "sb_publishable_pMs5gI4r1UW5F-cKuMvh1A_SiEIBltz"
+);
+
+document.getElementById("track").onclick=async()=>{
+ const id=document.getElementById("orderId").value.trim();
+ const mobile=document.getElementById("mobile").value.trim();
+ const button=document.getElementById("track");
+ const result=document.getElementById("result");
+ const message=document.getElementById("message");
+
+ result.style.display="none";
+ message.textContent="";
+
+ if(!/^[1-9][0-9]*$/.test(id)){
+   message.textContent="Please enter a valid Order ID.";
+   return;
+ }
+ if(!/^[0-9]{10}$/.test(mobile)){
+   message.textContent="Please enter a valid 10-digit mobile number.";
+   return;
+ }
+
+ button.disabled=true;
+ button.textContent="Checking...";
+
+ try{
+   const {data,error}=await db.rpc("track_customer_order",{
+     p_order_id:Number(id),
+     p_mobile:mobile
+   });
+
+   if(error)throw error;
+
+   if(!data||data.length===0){
+     message.textContent="Order not found. Please check your Order ID and mobile number.";
+   }else{
+     const order=data[0];
+     document.getElementById("status").textContent=
+       "Order Status: "+(order.order_status||"Pending");
+     document.getElementById("date").textContent=
+       order.ordered_at
+       ?"Order Date: "+new Date(order.ordered_at).toLocaleString()
+       :"";
+     result.style.display="block";
+   }
+ }catch(e){
+   message.textContent="Unable to check order. Please try again later.";
+ }finally{
+   button.disabled=false;
+   button.textContent="Track Order";
+ }
+};
+</script>
+</body>
+</html>
