@@ -1,54 +1,552 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CSINGH Store</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f1f3f6;color:#222;font-family:Arial}button,input,select{font:inherit}button{cursor:pointer}
-.top{background:#1768d4;color:white;padding:12px 5%;display:flex;gap:14px;align-items:center;flex-wrap:wrap}.logo{font-size:24px;font-weight:bold}.search{display:flex;flex:1;min-width:180px}.search input{width:100%;padding:11px;border:0}.search button{border:0;padding:0 16px}.track{color:white}
-.categories{display:flex;gap:20px;overflow:auto;background:white;padding:15px;justify-content:center}.categories button{border:0;background:none}
-.hero{margin:14px;padding:30px;background:linear-gradient(110deg,#0c4da2,#3988ed);color:white;border-radius:7px}main{max-width:1300px;margin:auto;padding:12px}.head{display:flex;justify-content:space-between;background:white;padding:14px;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.card{background:white;padding:12px}.photo{height:175px;display:flex;justify-content:center}.photo img{max-width:100%;max-height:100%;object-fit:contain}.price{font-weight:bold;font-size:19px}.add,.primary,.loc{background:#1768d4;color:white;border:0;border-radius:5px;padding:12px;width:100%;margin-top:9px}.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:5;align-items:center;justify-content:center;padding:10px}.panel{background:white;width:min(570px,100%);max-height:95vh;overflow:auto;padding:18px;border-radius:9px}.panelhead{display:flex;justify-content:space-between;align-items:center}.panelhead button{border:0;padding:8px}.line{display:flex;justify-content:space-between;border-bottom:1px solid #ddd;padding:10px 0;gap:8px}.line button{border:0;padding:6px}.field{margin:10px 0}.field label{display:block;font-weight:bold;margin-bottom:5px}.field input,.field select{width:100%;padding:12px;border:1px solid #ccd2da;border-radius:5px}.small{font-size:12px;color:#667085;line-height:1.5}.locbox{border:1px solid #dce3ed;padding:12px;border-radius:7px;margin:12px 0}.qr{text-align:center;background:#f5f7fa;padding:12px;margin-top:15px}.qr img{max-width:230px;width:100%}#result{display:none;background:#e9f7ed;padding:12px;margin-top:12px}
-@media(max-width:600px){.top{padding:12px}.search{order:3;flex-basis:100%}.categories{justify-content:flex-start}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.photo{height:140px}}
-</style></head>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f3f6;color:#222;font-family:Arial}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.top{background:#1768d4;color:white;padding:12px 5%;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.logo{font-size:24px;font-weight:bold}
+.search{display:flex;flex:1;min-width:180px}
+.search input{width:100%;padding:11px;border:0}
+.search button{border:0;padding:0 16px}
+.track{color:white}
+.categories{display:flex;gap:20px;overflow:auto;background:white;padding:15px;justify-content:center}
+.categories button{border:0;background:none}
+.hero{margin:14px;padding:30px;background:linear-gradient(110deg,#0c4da2,#3988ed);color:white;border-radius:7px}
+main{max-width:1300px;margin:auto;padding:12px}
+.head{display:flex;justify-content:space-between;background:white;padding:14px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.card{background:white;padding:12px}
+.photo{height:175px;display:flex;justify-content:center}
+.photo img{max-width:100%;max-height:100%;object-fit:contain}
+.price{font-weight:bold;font-size:19px}
+.add,.primary,.loc{background:#1768d4;color:white;border:0;border-radius:5px;padding:12px;width:100%;margin-top:9px}
+.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:5;align-items:center;justify-content:center;padding:10px}
+.panel{background:white;width:min(570px,100%);max-height:95vh;overflow:auto;padding:18px;border-radius:9px}
+.panelhead{display:flex;justify-content:space-between;align-items:center}
+.panelhead button{border:0;padding:8px}
+.line{display:flex;justify-content:space-between;border-bottom:1px solid #ddd;padding:10px 0;gap:8px}
+.line button{border:0;padding:6px}
+.field{margin:10px 0}
+.field label{display:block;font-weight:bold;margin-bottom:5px}
+.field input,.field select{width:100%;padding:12px;border:1px solid #ccd2da;border-radius:5px}
+.small{font-size:12px;color:#667085;line-height:1.5}
+.locbox{border:1px solid #dce3ed;padding:12px;border-radius:7px;margin:12px 0}
+.qr{text-align:center;background:#f5f7fa;padding:12px;margin-top:15px}
+.qr img{max-width:230px;width:100%}
+#result{display:none;background:#e9f7ed;padding:12px;margin-top:12px}
+@media(max-width:600px){
+.top{padding:12px}
+.search{order:3;flex-basis:100%}
+.categories{justify-content:flex-start}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.photo{height:140px}
+}
+</style>
+</head>
 <body>
-<header class="top"><div class="logo">CSINGH</div><div class="search"><input id="search" placeholder="Search products" oninput="draw()"><button onclick="draw()">🔍</button></div><a class="track" href="./tracking.html">Track Order</a><button onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button></header>
-<nav class="categories"><button onclick="chooseCategory('All',this)" class="active">All</button><button onclick="chooseCategory('Women',this)">Women</button><button onclick="chooseCategory('Men',this)">Men</button><button onclick="chooseCategory('Kids',this)">Kids</button><button onclick="chooseCategory('Electronics',this)">Electronics</button><button onclick="chooseCategory('Home',this)">Home</button><button onclick="chooseCategory('Other',this)">Other</button></nav>
-<section class="hero"><h1>Welcome to CSINGH Store</h1><p>Shop easily and conveniently.</p><a href="#products" style="color:#222;background:#ffcf40;padding:10px;text-decoration:none">SHOP NOW</a></section>
-<main id="products"><div class="head"><b>Best Picks For You</b><select id="sort" onchange="draw()"><option value="new">Newest first</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option></select></div><p id="loadMessage">Loading products...</p><div class="grid" id="grid"></div></main>
-<footer style="background:#172337;color:white;text-align:center;padding:22px"><b>CSINGH STORE</b><p><a href="./tracking.html" style="color:white">Track Your Order</a></p></footer>
-<div class="overlay" id="overlay" onclick="if(event.target===this)hideCart()"><section class="panel">
-<div class="panelhead"><h2>Cart & Checkout</h2><button onclick="hideCart()">✕</button></div><div id="items"></div><h3 id="total">Total ₹0</h3>
-<div class="field"><label>Contact Name *</label><input id="name" autocomplete="name" placeholder="Full name"></div>
-<div class="field"><label>Contact Number *</label><input id="mobile" inputmode="numeric" maxlength="10" placeholder="10 digit mobile number"></div>
+
+<header class="top">
+<div class="logo">CSINGH</div>
+<div class="search">
+<input id="search" placeholder="Search products" oninput="draw()">
+<button onclick="draw()">🔍</button>
+</div>
+<a class="track" href="./tracking.html">Track Order</a>
+<button onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button>
+</header>
+
+<nav class="categories">
+<button onclick="chooseCategory('All',this)" class="active">All</button>
+<button onclick="chooseCategory('Women',this)">Women</button>
+<button onclick="chooseCategory('Men',this)">Men</button>
+<button onclick="chooseCategory('Kids',this)">Kids</button>
+<button onclick="chooseCategory('Electronics',this)">Electronics</button>
+<button onclick="chooseCategory('Home',this)">Home</button>
+<button onclick="chooseCategory('Other',this)">Other</button>
+</nav>
+
+<section class="hero">
+<h1>Welcome to CSINGH Store</h1>
+<p>Shop easily and conveniently.</p>
+<a href="#products" style="color:#222;background:#ffcf40;padding:10px;text-decoration:none">SHOP NOW</a>
+</section>
+
+<main id="products">
+<div class="head">
+<b>Best Picks For You</b>
+<select id="sort" onchange="draw()">
+<option value="new">Newest first</option>
+<option value="low">Price: Low to High</option>
+<option value="high">Price: High to Low</option>
+</select>
+</div>
+<p id="loadMessage">Loading products...</p>
+<div class="grid" id="grid"></div>
+</main>
+
+<footer style="background:#172337;color:white;text-align:center;padding:22px">
+<b>CSINGH STORE</b>
+<p><a href="./tracking.html" style="color:white">Track Your Order</a></p>
+</footer>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)hideCart()">
+<section class="panel">
+<div class="panelhead">
+<h2>Cart & Checkout</h2>
+<button onclick="hideCart()">✕</button>
+</div>
+
+<div id="items"></div>
+<h3 id="total">Total ₹0</h3>
+
+<div class="field">
+<label>Contact Name *</label>
+<input id="name" autocomplete="name" placeholder="Full name">
+</div>
+
+<div class="field">
+<label>Contact Number *</label>
+<input id="mobile" inputmode="numeric" maxlength="10" placeholder="10 digit mobile number">
+</div>
+
 <h3>Delivery Address</h3>
-<div class="locbox"><b>📍 Google Maps Location (Optional)</b><button type="button" class="loc" onclick="getLocation()">Use My Current Location</button><p id="locationMessage" class="small">Location milne par address fields auto-fill karne ki koshish hogi. Nahi mili to manually bharein.</p><a id="mapPreview" target="_blank" rel="noopener" style="display:none">Open location in Google Maps</a></div>
-<div class="field"><label>House no. / Building name *</label><input id="house" placeholder="House / building / village"></div>
-<div class="field"><label>Road name / Area / Colony *</label><input id="area" placeholder="Road / area / mohalla"></div>
-<div class="field"><label>Pincode *</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="6 digit pincode"></div>
-<div class="field"><label>City / Village *</label><input id="city" placeholder="City or village"></div>
-<div class="field"><label>District *</label><input id="district" placeholder="District"></div>
-<div class="field"><label>State *</label><select id="state"><option value="">Select state</option><option>Uttar Pradesh</option><option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option><option>Delhi</option><option>Other</option></select></div>
-<div class="field"><label>Nearby famous place / shop / school (Optional)</label><input id="landmark" placeholder="Nearby landmark"></div>
-<div class="field"><label>Payment Method *</label><select id="payment"><option value="COD">Cash on Delivery (COD)</option><option value="Prepaid">Prepaid - PhonePe QR</option></select></div>
-<div id="qrBox" class="qr" style="display:none"><b>Scan & Pay with PhonePe</b><br><img src="https://witjuwpraoycphopccnf.supabase.co/storage/v1/object/public/payment-qr%20bucket/WhatsApp%20Image%202026-10-31%20at%2006.38.34.jpeg" alt="PhonePe QR"><p class="small">Payment is manually verified. Prepaid order will remain Payment Verification Pending until checked.</p></div>
-<button class="primary" id="placeOrderBtn" onclick="placeOrder()">PLACE ORDER</button><div id="result"></div>
-</section></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+
+<div class="locbox">
+<b>📍 Google Maps Location (Optional)</b>
+<button type="button" class="loc" onclick="getLocation()">Use My Current Location</button>
+<p id="locationMessage" class="small">Button dabakar browser prompt mein Allow karein. Location se milne wali address details auto-fill hongi; missing details manually check karein.</p>
+<a id="mapPreview" target="_blank" rel="noopener" style="display:none">Open location in Google Maps</a>
+</div>
+
+<div class="field">
+<label>House no. / Building name *</label>
+<input id="house" placeholder="House / building / village">
+</div>
+
+<div class="field">
+<label>Road name / Area / Colony *</label>
+<input id="area" placeholder="Road / area / mohalla">
+</div>
+
+<div class="field">
+<label>Pincode *</label>
+<input id="pin" inputmode="numeric" maxlength="6" placeholder="6 digit pincode">
+</div>
+
+<div class="field">
+<label>City / Village *</label>
+<input id="city" placeholder="City or village">
+</div>
+
+<div class="field">
+<label>District *</label>
+<input id="district" placeholder="District">
+</div>
+
+<div class="field">
+<label>State *</label>
+<select id="state">
+<option value="">Select state</option>
+<option>Uttar Pradesh</option>
+<option>Bihar</option>
+<option>Rajasthan</option>
+<option>Madhya Pradesh</option>
+<option>Delhi</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="field">
+<label>Nearby famous place / shop / school (Optional)</label>
+<input id="landmark" placeholder="Nearby landmark">
+</div>
+
+<div class="field">
+<label>Payment Method *</label>
+<select id="payment">
+<option value="COD">Cash on Delivery (COD)</option>
+<option value="Prepaid">Prepaid - PhonePe QR</option>
+</select>
+</div>
+
+<div id="qrBox" class="qr" style="display:none">
+<b>Scan & Pay with PhonePe</b><br>
+<img src="https://witjuwpraoycphopccnf.supabase.co/storage/v1/object/public/payment-qr%20bucket/WhatsApp%20Image%202026-10-31%20at%2006.38.34.jpeg" alt="PhonePe QR">
+<p class="small">Payment is manually verified. Prepaid order will remain Payment Verification Pending until checked.</p>
+</div>
+
+<button class="primary" id="placeOrderBtn" onclick="placeOrder()">PLACE ORDER</button>
+<div id="result"></div>
+</section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+
 const SUPABASE_URL="https://witjuwpraoycphopccnf.supabase.co";
 const SUPABASE_ANON_KEY="sb_publishable_pMs5gI4r1UW5F-cKuMvh1A_SiEIBltz";
-const $=id=>document.getElementById(id),money=n=>"₹"+Number(n||0).toLocaleString("en-IN");
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY),products=[],cart=[],category="All",customerLocation=null;
-async function load(){try{let {data,error}=await db.from("products").select("id,name,description,price,category,image_url,stock,is_active,created_at").eq("is_active",true).order("created_at",{ascending:false});if(error)throw error;products=data||[];$("loadMessage").textContent=products.length?products.length+" products available":"No products available yet.";draw()}catch(e){$("loadMessage").textContent="Could not load products: "+e.message}}
-function chooseCategory(c,b){category=c;document.querySelectorAll(".categories button").forEach(x=>x.classList.remove("active"));b.classList.add("active");draw()}
-function draw(){let q=$("search").value.toLowerCase().trim(),list=products.filter(p=>(p.name+" "+(p.description||"")+" "+(p.category||"")).toLowerCase().includes(q)&&(category==="All"||category==="Other"||(p.category||"").toLowerCase().includes(category.toLowerCase())));if($("sort").value==="low")list.sort((a,b)=>a.price-b.price);if($("sort").value==="high")list.sort((a,b)=>b.price-a.price);$("grid").innerHTML=list.length?list.map(p=>`<article class="card"><div class="photo"><img src="${esc(p.image_url||"")}" alt="${esc(p.name)}"></div><h3>${esc(p.name)}</h3><p>${esc(p.description||p.category||"")}</p><div class="price">${money(p.price)}</div><p>${Number(p.stock)>0?"In Stock":"Out of Stock"}</p><button class="add" onclick="add('${esc(p.id)}')" ${Number(p.stock)<=0?"disabled":""}>ADD TO CART</button></article>`).join(""):'<p>No products found.</p>'}
-function add(id){let p=products.find(x=>String(x.id)===String(id));if(!p)return;let i=cart.find(x=>String(x.id)===String(id));if(i){if(i.qty>=Number(p.stock))return alert("Stock limit reached");i.qty++}else cart.push({id,qty:1});refresh();showCart()}
-function showCart(){$("overlay").style.display="flex";$("result").style.display="none";refresh()}function hideCart(){$("overlay").style.display="none"}
-function refresh(){$("count").textContent=cart.reduce((s,x)=>s+x.qty,0);$("items").innerHTML=cart.length?cart.map(x=>{let p=products.find(y=>String(y.id)===String(x.id));return `<div class="line"><span>${esc(p.name)} × ${x.qty}<br><b>${money(p.price*x.qty)}</b></span><span><button onclick="changeQty('${esc(x.id)}',-1)">−</button><button onclick="changeQty('${esc(x.id)}',1)">+</button><button onclick="removeItem('${esc(x.id)}')">Remove</button></span></div>`}).join(""):"Your cart is empty.";let t=cart.reduce((s,x)=>s+Number(products.find(y=>String(y.id)===String(x.id))?.price||0)*x.qty,0);$("total").textContent="Total: "+money(t)}
-function changeQty(id,d){let i=cart.find(x=>String(x.id)===String(id)),p=products.find(x=>String(x.id)===String(id));if(!i||!p)return;if(d>0&&i.qty>=Number(p.stock))return alert("Stock limit reached");i.qty+=d;if(i.qty<=0)removeItem(id);else refresh()}
-function removeItem(id){cart=cart.filter(x=>String(x.id)!==String(id));refresh()}
-$("payment").addEventListener("change",()=>$("qrBox").style.display=$("payment").value==="Prepaid"?"block":"none");
-async function getLocation(){let m=$("locationMessage");if(!navigator.geolocation){m.textContent="Browser location not supported. Address manually fill karein.";return}m.textContent="Getting location...";navigator.geolocation.getCurrentPosition(async pos=>{customerLocation={lat:pos.coords.latitude,lng:pos.coords.longitude};let url=`https://www.google.com/maps?q=${customerLocation.lat},${customerLocation.lng}`;$("mapPreview").href=url;$("mapPreview").style.display="inline-block";m.textContent="Location received. Address autofill ho raha hai...";try{let r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${customerLocation.lat}&lon=${customerLocation.lng}&addressdetails=1`);if(!r.ok)throw Error("Address lookup failed");let j=await r.json(),a=j.address||{};const set=(id,v)=>{if(v&&!$(id).value.trim())$(id).value=v};set("house",[a.house_number,a.building].filter(Boolean).join(", "));set("area",[a.road,a.suburb,a.neighbourhood].filter(Boolean).join(", "));set("pin",a.postcode);set("city",a.village||a.town||a.city||a.hamlet);set("district",a.state_district||a.county||a.district);if(a.state){let s=$("state");let opt=[...s.options].find(o=>o.text.toLowerCase()===a.state.toLowerCase());if(opt)s.value=opt.value}m.textContent="Location captured. Filled address ko check aur zarurat par edit karein."}catch(e){m.textContent="Map location saved; address auto-fill nahi ho saka. Sabhi address fields manually bharein."}},()=>{customerLocation=null;m.textContent="Location nahi mili. Address fields manually bharein."},{enableHighAccuracy:true,timeout:15000,maximumAge:0})}
-async function placeOrder(){if(!cart.length)return alert("Your cart is empty.");let n=$("name").value.trim(),m=$("mobile").value.trim(),house=$("house").value.trim(),area=$("area").value.trim(),pin=$("pin").value.trim(),city=$("city").value.trim(),district=$("district").value.trim(),state=$("state").value.trim(),landmark=$("landmark").value.trim(),payment=$("payment").value;if(!n||!/^\d{10}$/.test(m)||!house||!area||!/^\d{6}$/.test(pin)||!city||!district||!state)return alert("Name, valid mobile, house, area, 6-digit PIN, city/village, district and state are required.");for(let x of cart){let p=products.find(y=>String(y.id)===String(x.id));if(!p||x.qty>Number(p.stock))return alert("Stock changed. Please check cart.")}let address=[`House/Building: ${house}`,`Road/Area: ${area}`,`PIN: ${pin}`,`City/Village: ${city}`,`District: ${district}`,`State: ${state}`,landmark?`Landmark: ${landmark}`:"",`Payment method: ${payment}`,customerLocation?`Google Maps: https://www.google.com/maps?q=${customerLocation.lat},${customerLocation.lng}`:""].filter(Boolean).join("\n");let btn=$("placeOrderBtn");btn.disabled=true;btn.textContent="PLACING ORDER...";try{let orderItems=cart.map(x=>{let p=products.find(y=>String(y.id)===String(x.id));return {product_id:p.id,name:p.name,price:Number(p.price),quantity:x.qty}}),total=orderItems.reduce((s,x)=>s+x.price*x.quantity,0),status=payment==="COD"?"COD Pending":"Payment Verification Pending";let {data,error}=await db.from("orders").insert([{customer_name:n,mobile:m,address,items:orderItems,total,status}]).select("id").single();if(error)throw error;$("result").style.display="block";$("result").innerHTML=`Order submitted. Order ID: <b>${esc(data.id)}</b><br>Status: <b>${esc(status)}</b><br><a href="./tracking.html">Track order</a>`;cart=[];["name","mobile","house","area","pin","city","district","landmark"].forEach(id=>$(id).value="");$("state").value="";$("payment").value="COD";$("qrBox").style.display="none";customerLocation=null;$("mapPreview").style.display="none";$("locationMessage").textContent="Location optional hai. Address manually bhi bhar sakte hain.";refresh()}catch(e){alert("Order failed: "+e.message)}finally{btn.disabled=false;btn.textContent="PLACE ORDER"}}
+
+const $=id=>document.getElementById(id);
+const money=n=>"₹"+Number(n||0).toLocaleString("en-IN");
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+
+let db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+let products=[],cart=[],category="All",customerLocation=null;
+
+async function load(){
+try{
+let {data,error}=await db.from("products")
+.select("id,name,description,price,category,image_url,stock,is_active,created_at")
+.eq("is_active",true)
+.order("created_at",{ascending:false});
+
+if(error)throw error;
+
+products=data||[];
+$("loadMessage").textContent=products.length
+?products.length+" products available"
+:"No products available yet.";
+draw();
+
+}catch(e){
+$("loadMessage").textContent="Could not load products: "+e.message;
+}
+}
+
+function chooseCategory(c,b){
+category=c;
+document.querySelectorAll(".categories button").forEach(x=>x.classList.remove("active"));
+b.classList.add("active");
+draw();
+}
+
+function draw(){
+let q=$("search").value.toLowerCase().trim();
+
+let list=products.filter(p=>
+(p.name+" "+(p.description||"")+" "+(p.category||"")).toLowerCase().includes(q)&&
+(category==="All"||category==="Other"||(p.category||"").toLowerCase().includes(category.toLowerCase()))
+);
+
+if($("sort").value==="low")list.sort((a,b)=>a.price-b.price);
+if($("sort").value==="high")list.sort((a,b)=>b.price-a.price);
+
+$("grid").innerHTML=list.length?list.map(p=>`
+<article class="card">
+<div class="photo">
+<img src="${esc(p.image_url||"")}" alt="${esc(p.name)}">
+</div>
+<h3>${esc(p.name)}</h3>
+<p>${esc(p.description||p.category||"")}</p>
+<div class="price">${money(p.price)}</div>
+<p>${Number(p.stock)>0?"In Stock":"Out of Stock"}</p>
+<button class="add" onclick="add('${esc(p.id)}')" ${Number(p.stock)<=0?"disabled":""}>ADD TO CART</button>
+</article>
+`).join(""):'<p>No products found.</p>';
+}
+
+function add(id){
+let p=products.find(x=>String(x.id)===String(id));
+if(!p)return;
+
+let i=cart.find(x=>String(x.id)===String(id));
+
+if(i){
+if(i.qty>=Number(p.stock))return alert("Stock limit reached");
+i.qty++;
+}else{
+cart.push({id,qty:1});
+}
+
+refresh();
+showCart();
+}
+
+function showCart(){
+$("overlay").style.display="flex";
+$("result").style.display="none";
+refresh();
+}
+
+function hideCart(){
+$("overlay").style.display="none";
+}
+
+function refresh(){
+$("count").textContent=cart.reduce((s,x)=>s+x.qty,0);
+
+$("items").innerHTML=cart.length?cart.map(x=>{
+let p=products.find(y=>String(y.id)===String(x.id));
+return `
+<div class="line">
+<span>${esc(p.name)} × ${x.qty}<br><b>${money(p.price*x.qty)}</b></span>
+<span>
+<button onclick="changeQty('${esc(x.id)}',-1)">−</button>
+<button onclick="changeQty('${esc(x.id)}',1)">+</button>
+<button onclick="removeItem('${esc(x.id)}')">Remove</button>
+</span>
+</div>`;
+}).join(""):"Your cart is empty.";
+
+let t=cart.reduce((s,x)=>s+Number(products.find(y=>String(y.id)===String(x.id))?.price||0)*x.qty,0);
+$("total").textContent="Total: "+money(t);
+}
+
+function changeQty(id,d){
+let i=cart.find(x=>String(x.id)===String(id));
+let p=products.find(x=>String(x.id)===String(id));
+if(!i||!p)return;
+if(d>0&&i.qty>=Number(p.stock))return alert("Stock limit reached");
+i.qty+=d;
+if(i.qty<=0)removeItem(id);
+else refresh();
+}
+
+function removeItem(id){
+cart=cart.filter(x=>String(x.id)!==String(id));
+refresh();
+}
+
+$("payment").addEventListener("change",()=>
+$("qrBox").style.display=$("payment").value==="Prepaid"?"block":"none"
+);
+
+async function getLocation(){
+
+const m=$("locationMessage");
+const btn=document.querySelector(".loc");
+
+if(!navigator.geolocation){
+m.textContent="Is browser mein location support nahi hai. Address manually bharein.";
+return;
+}
+
+if(!window.isSecureContext){
+m.textContent="Location ke liye website HTTPS par kholna zaroori hai.";
+return;
+}
+
+btn.disabled=true;
+btn.textContent="Getting location…";
+m.textContent="Phone ke location permission prompt par Allow dabayein…";
+
+navigator.geolocation.getCurrentPosition(async pos=>{
+
+customerLocation={
+lat:pos.coords.latitude,
+lng:pos.coords.longitude
+};
+
+$("mapPreview").href=`https://www.google.com/maps?q=${customerLocation.lat},${customerLocation.lng}`;
+$("mapPreview").style.display="inline-block";
+
+m.textContent="Location mil gayi. Address details la rahe hain…";
+
+const put=(id,value)=>{
+if(value!==undefined&&value!==null&&String(value).trim())
+$(id).value=String(value).trim();
+};
+
+const first=(...v)=>v.find(x=>x!==undefined&&x!==null&&String(x).trim())||"";
+
+try{
+
+let a={},display="";
+
+try{
+const r=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&localityLanguage=en`);
+
+if(!r.ok)throw Error("Address lookup failed");
+
+a=await r.json();
+display=a.locality||a.city||a.principalSubdivision||"";
+
+}catch(primaryError){
+
+const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&zoom=18&addressdetails=1`);
+
+if(!r.ok)throw Error("Address service unavailable");
+
+const j=await r.json();
+a=j.address||{};
+display=j.display_name||"";
+}
+
+const road=first(a.road,a.street,a.streetName,a.neighbourhood,a.suburb,a.locality,display.split(",")[0]);
+
+const house=first(a.house_number,a.house,a.building,a.residential,a.road,a.street,road);
+
+const city=first(a.village,a.town,a.city,a.locality,a.hamlet,a.suburb);
+
+const district=first(a.district,a.county,a.state_district,a.principalSubdivision,a.localityInfo?.administrative?.[1]?.name);
+
+const stateName=first(a.state,a.principalSubdivision);
+
+put("house",house);
+put("area",road);
+put("pin",first(a.postcode,a.postalCode));
+put("city",city);
+put("district",district);
+
+if(stateName){
+const stateSelect=$("state");
+
+const option=[...stateSelect.options].find(o=>
+o.value.toLowerCase()===stateName.toLowerCase()||
+o.text.toLowerCase()===stateName.toLowerCase()||
+(stateName.toLowerCase().includes("uttar pradesh")&&o.text==="Uttar Pradesh")
+);
+
+if(option)stateSelect.value=option.value;
+else stateSelect.value="Other";
+}
+
+const missing=["house","area","pin","city","district","state"].filter(id=>!$(id).value.trim());
+
+m.textContent=missing.length
+?"Location mil gayi. Kuch details map se nahi mili ("+missing.join(", ")+"). Inhe check karke manually bharein."
+:"Address ke available boxes fill ho gaye. Submit se pehle house/area/pincode check kar lein.";
+
+}catch(e){
+
+m.textContent="Map pin mil gaya, lekin address service se details nahi aayi. Map link kholkar address manually bharein.";
+
+}finally{
+
+btn.disabled=false;
+btn.textContent="Use My Current Location";
+
+}
+
+},err=>{
+
+btn.disabled=false;
+btn.textContent="Use My Current Location";
+customerLocation=null;
+
+const msgs={
+1:"Location permission Allow karein, phir dobara try karein.",
+2:"Location abhi nahi mil rahi. Phone ka Location/GPS on karke try karein.",
+3:"Location lene mein der hui. Dobara try karein."
+};
+
+m.textContent=msgs[err.code]||"Location nahi mili. Address manually bharein.";
+
+},{enableHighAccuracy:true,timeout:25000,maximumAge:0});
+
+}
+
+async function placeOrder(){
+
+if(!cart.length)return alert("Your cart is empty.");
+
+let n=$("name").value.trim();
+let m=$("mobile").value.trim();
+let house=$("house").value.trim();
+let area=$("area").value.trim();
+let pin=$("pin").value.trim();
+let city=$("city").value.trim();
+let district=$("district").value.trim();
+let state=$("state").value.trim();
+let landmark=$("landmark").value.trim();
+let payment=$("payment").value;
+
+if(!n||!/^\d{10}$/.test(m)||!house||!area||!/^\d{6}$/.test(pin)||!city||!district||!state)
+return alert("Name, valid mobile, house, area, 6-digit PIN, city/village, district and state are required.");
+
+for(let x of cart){
+let p=products.find(y=>String(y.id)===String(x.id));
+if(!p||x.qty>Number(p.stock))
+return alert("Stock changed. Please check cart.");
+}
+
+let address=[
+`House/Building: ${house}`,
+`Road/Area: ${area}`,
+`PIN: ${pin}`,
+`City/Village: ${city}`,
+`District: ${district}`,
+`State: ${state}`,
+landmark?`Landmark: ${landmark}`:"",
+`Payment method: ${payment}`,
+customerLocation?`Google Maps: https://www.google.com/maps?q=${customerLocation.lat},${customerLocation.lng}`:""
+].filter(Boolean).join("\n");
+
+let btn=$("placeOrderBtn");
+btn.disabled=true;
+btn.textContent="PLACING ORDER...";
+
+try{
+
+let orderItems=cart.map(x=>{
+let p=products.find(y=>String(y.id)===String(x.id));
+return {
+product_id:p.id,
+name:p.name,
+price:Number(p.price),
+quantity:x.qty
+};
+});
+
+let total=orderItems.reduce((s,x)=>s+x.price*x.quantity,0);
+let status=payment==="COD"?"COD Pending":"Payment Verification Pending";
+
+let {error}=await db.from("orders").insert([{
+customer_name:n,
+mobile:m,
+address,
+items:orderItems,
+total,
+status
+}]);
+
+if(error)throw error;
+
+$("result").style.display="block";
+$("result").innerHTML=`
+<b>Order submitted successfully!</b><br>
+Status: <b>${esc(status)}</b><br>
+Order details admin dashboard mein check karein.
+<a href="./tracking.html">Track order</a>
+`;
+
+cart=[];
+
+["name","mobile","house","area","pin","city","district","landmark"].forEach(id=>$(id).value="");
+
+$("state").value="";
+$("payment").value="COD";
+$("qrBox").style.display="none";
+customerLocation=null;
+$("mapPreview").style.display="none";
+$("locationMessage").textContent="Location optional hai. Address manually bhi bhar sakte hain.";
+
+refresh();
+
+}catch(e){
+
+alert("Order failed: "+e.message);
+
+}finally{
+
+btn.disabled=false;
+btn.textContent="PLACE ORDER";
+
+}
+
+}
+
 load();
-</script></body></html>
+
+</script>
+</body>
+</html>
