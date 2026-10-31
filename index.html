@@ -53,6 +53,74 @@ function add(id){let p=products.find(x=>Number(x.id)===id);if(!p)return;let x=ca
 function showCart(){$("overlay").style.display="flex";refresh()}function hideCart(){$("overlay").style.display="none"}
 function refresh(){$("count").textContent=cart.reduce((s,x)=>s+x.qty,0);$("items").innerHTML=cart.length?cart.map(x=>{let p=products.find(y=>Number(y.id)===x.id);return `<div class="line"><span>${esc(p.name)} × ${x.qty}</span><b>${money(Number(p.price)*x.qty)}</b><button onclick="removeItem(${x.id})">Remove</button></div>`}).join(""):"Your cart is empty.";let total=cart.reduce((s,x)=>s+Number(products.find(p=>Number(p.id)===x.id).price)*x.qty,0);$("total").textContent="Total: "+money(total)}
 function removeItem(id){cart=cart.filter(x=>x.id!==id);refresh()}
-function placeOrder(){if(!cart.length)return alert("Cart is empty.");let n=$("name").value.trim(),m=$("mobile").value.trim(),a=$("address").value.trim();if(!n||!/^\d{10}$/.test(m)||!a)return alert("Enter name, valid 10-digit mobile and delivery address.");if(STORE_WHATSAPP.includes("X"))return alert("Store WhatsApp number is not configured.");let lines=cart.map(x=>{let p=products.find(y=>Number(y.id)===x.id);return `${p.name} x ${x.qty} = ${money(p.price*x.qty)}`}).join("\n");let total=cart.reduce((s,x)=>s+Number(products.find(p=>Number(p.id)===x.id).price)*x.qty,0);let text=`CSINGH order\nName: ${n}\nMobile: ${m}\nAddress: ${a}\n\n${lines}\nTotal: ${money(total)}`;window.open("https://wa.me/"+STORE_WHATSAPP+"?text="+encodeURIComponent(text),"_blank")}
+async function placeOrder(){
+
+  if(!cart.length){
+    return alert("Your cart is empty.");
+  }
+
+  const n=$("name").value.trim();
+  const m=$("mobile").value.trim();
+  const a=$("address").value.trim();
+
+  if(!n || !/^\d{10}$/.test(m) || !a){
+    return alert("Enter your name, valid 10-digit mobile and address.");
+  }
+
+  const btn=$("placeOrderBtn");
+  btn.disabled=true;
+  btn.textContent="Placing order...";
+
+  try {
+
+    const items=cart.map(x=>{
+      const p=products.find(y=>Number(y.id)===x.id);
+
+      return {
+        product_id:p.id,
+        name:p.name,
+        price:Number(p.price),
+        quantity:x.qty
+      };
+    });
+
+    const total=items.reduce(
+      (sum,item)=>sum+item.price*item.quantity,0
+    );
+
+    const {data,error}=await db.from("orders").insert([{
+      customer_name:n,
+      mobile:m,
+      address:a,
+      items:items,
+      total:total,
+      status:"Pending"
+    }]).select("id").single();
+
+    if(error){
+      throw error;
+    }
+
+    alert("Order placed successfully! Order ID: "+data.id);
+
+    cart=[];
+    $("name").value="";
+    $("mobile").value="";
+    $("address").value="";
+
+    refresh();
+    hideCart();
+
+  } catch(error) {
+
+    alert("Order failed: "+error.message);
+
+  } finally {
+
+    btn.disabled=false;
+    btn.textContent="Place Order";
+
+  }
+}
 load();
 </script></body></html>
