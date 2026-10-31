@@ -1,126 +1,311 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CSINGH — Online Store</title><link rel="manifest" href="manifest.json">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSINGH Store | Online Shopping</title>
 <style>
-:root{--navy:#14243d;--gold:#f4bd55;--bg:#f5f7fa;--muted:#697586}*{box-sizing:border-box}body{margin:0;font-family:Arial;background:var(--bg);color:#172033}header{background:var(--navy);color:white;padding:16px 5%;display:flex;justify-content:space-between;position:sticky;top:0}.logo{font-size:25px;font-weight:900;letter-spacing:2px}.cart{border:0;border-radius:30px;padding:11px 17px;background:var(--gold);font-weight:bold;cursor:pointer}.hero{padding:54px 6%;background:linear-gradient(115deg,#14243d,#1768d4);color:white}.hero h1{font-size:clamp(34px,6vw,58px);margin:0}.hero p{line-height:1.6}.hero a{display:inline-block;background:var(--gold);padding:13px 20px;border-radius:8px;text-decoration:none;color:#172033;font-weight:bold}main{max-width:1120px;margin:auto;padding:35px 5%}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:22px}.card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 4px 18px #14243d10}.card img{width:100%;height:205px;object-fit:cover;background:#e8edf3}.info{padding:15px}.price{font-size:19px;font-weight:800;color:var(--navy)}.add,.primary{width:100%;padding:12px;border:0;border-radius:8px;background:var(--navy);color:white;font-weight:bold;cursor:pointer;margin-top:12px}footer{background:#101a2b;color:white;text-align:center;padding:25px}.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:5;align-items:center;justify-content:center;padding:14px}.panel{background:white;border-radius:15px;padding:22px;width:min(540px,100%);max-height:92vh;overflow:auto}.line{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #eee}label{display:block;margin-top:10px;font-weight:bold}input,textarea{width:100%;padding:12px;border:1px solid #ccd3dd;border-radius:8px;margin-top:6px;font:inherit}.small{font-size:12px;color:var(--muted)}@media(max-width:600px){.hero{padding:40px 6%}}
-</style></head><body>
-<header><div class="logo">CSINGH</div><button class="cart" onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button></header>
-<section class="hero"><h1>Shop smart. Shop CSINGH.</h1><p>Discover our collection and order in a few easy steps. Your store, your style.</p><a href="#products">Explore products</a></section>
-<main id="products"><h2>Featured products</h2><p id="loadMessage" class="small">Loading products…</p><div class="grid" id="grid"></div></main><footer><b>CSINGH</b><br>Online Store ·</footer>
-<div class="overlay" id="overlay" onclick="if(event.target===this)hideCart()">
-<section class="panel">
+*{box-sizing:border-box}
+body{margin:0;background:#f1f3f6;color:#212121;font-family:Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.top{background:#1768d4;color:white;padding:12px 5%;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.logo{font-size:25px;font-weight:900;letter-spacing:1px;white-space:nowrap}
+.search{flex:1;min-width:180px;display:flex}
+.search input{width:100%;padding:12px;border:0;border-radius:5px 0 0 5px;outline:none}
+.search button{border:0;background:#ffcf40;padding:0 18px;border-radius:0 5px 5px 0}
+.top button.action{background:white;color:#1768d4;border:0;padding:11px 15px;border-radius:5px;font-weight:bold}
+.categories{background:white;display:flex;justify-content:center;gap:25px;padding:16px;overflow:auto;box-shadow:0 2px 5px #0001}
+.categories button{border:0;background:none;font-weight:bold;white-space:nowrap;color:#333}
+.categories button.active{color:#1768d4}
+.hero{margin:14px;background:linear-gradient(110deg,#0c4da2,#3988ed);color:white;padding:35px 6%;border-radius:7px}
+.hero h1{font-size:clamp(27px,5vw,44px);margin:0 0 10px}
+.hero p{line-height:1.6}
+.hero a{display:inline-block;background:#ffcf40;color:#172033;text-decoration:none;padding:12px 20px;border-radius:5px;font-weight:bold;margin-top:8px}
+main{padding:10px 14px 30px;max-width:1400px;margin:auto}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:white;padding:15px;border-radius:5px;margin:12px 0}
+.section-head h2{margin:0;font-size:21px}
+#sort{padding:9px;border:1px solid #ddd;border-radius:5px;background:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:12px}
+.card{background:white;border-radius:5px;overflow:hidden;box-shadow:0 1px 4px #0001;transition:.2s}
+.card:hover{box-shadow:0 5px 15px #0002}
+.photo{height:190px;padding:12px;display:flex;align-items:center;justify-content:center}
+.photo img{width:100%;height:100%;object-fit:contain}
+.info{padding:12px}
+.info h3{font-size:16px;margin:5px 0 8px}
+.desc{font-size:13px;color:#777;min-height:30px}
+.price{font-size:19px;font-weight:bold;margin:9px 0;color:#172033}
+.stock{font-size:12px;color:#16823b}
+.add{background:#1768d4;color:white;border:0;padding:11px;border-radius:4px;width:100%;font-weight:bold;margin-top:10px}
+.empty{background:white;padding:30px;text-align:center;border-radius:6px;grid-column:1/-1}
+footer{background:#172337;color:white;text-align:center;padding:25px}
+.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:10;align-items:center;justify-content:center;padding:12px}
+.panel{background:white;width:min(550px,100%);max-height:94vh;overflow:auto;border-radius:8px;padding:20px}
+.panel-head{display:flex;justify-content:space-between;align-items:center}
+.panel-head button{border:0;background:#eee;border-radius:50%;width:32px;height:32px}
+.line{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #eee;padding:12px 0}
+.line button{border:0;background:#eee;padding:7px;border-radius:4px}
+label{display:block;font-weight:bold;margin-top:13px}
+input,textarea{width:100%;padding:12px;border:1px solid #ccd2da;border-radius:5px;margin-top:6px}
+.primary{background:#fb641b;color:white;border:0;border-radius:5px;padding:13px;width:100%;font-weight:bold;margin-top:15px}
+.qr{text-align:center;background:#f5f7fa;border-radius:8px;padding:15px;margin-top:18px}
+.qr img{width:100%;max-width:250px;border-radius:6px}
+.small{font-size:12px;color:#697586;line-height:1.5}
+#result{display:none;background:#e9f7ed;padding:14px;margin-top:12px;border-radius:6px}
+@media(max-width:600px){
+ .top{padding:12px;gap:10px}
+ .logo{font-size:22px}
+ .search{order:3;flex-basis:100%}
+ .categories{justify-content:flex-start;gap:18px}
+ .hero{margin:9px;padding:27px 20px}
+ main{padding:8px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .photo{height:145px}
+ .info{padding:9px}
+ .info h3{font-size:14px}
+ .price{font-size:17px}
+}
+</style>
+</head>
+<body>
 
-<div style="display:flex;justify-content:space-between">
-<h2>Checkout</h2>
-<button onclick="hideCart()">×</button>
-</div>
+<header class="top">
+ <div class="logo">CSINGH</div>
+ <div class="search">
+  <input id="search" placeholder="Search for products..." oninput="draw()">
+  <button onclick="draw()">🔍</button>
+ </div>
+ <button class="action" onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button>
+</header>
 
-<div id="items"></div>
-<h3 id="total">Total: ₹0</h3>
+<nav class="categories" id="categories">
+ <button class="active" onclick="chooseCategory('All',this)">All</button>
+ <button onclick="chooseCategory('Women',this)">Women</button>
+ <button onclick="chooseCategory('Men',this)">Men</button>
+ <button onclick="chooseCategory('Kids',this)">Kids</button>
+ <button onclick="chooseCategory('Electronics',this)">Electronics</button>
+ <button onclick="chooseCategory('Home',this)">Home</button>
+ <button onclick="chooseCategory('Other',this)">Other</button>
+</nav>
 
-<label>Full name</label>
-<input id="name" placeholder="Your name">
-
-<label>Mobile number</label>
-<input id="mobile" placeholder="10-digit mobile number">
-
-<label>Delivery address</label>
-<textarea id="address"></textarea>
-
-<div style="text-align:center;margin:20px 0;padding:18px;background:#f5f7fa;border-radius:12px">
-<h3 style="color:#14243d">CSINGH STORE</h3>
-<p><b>Scan & Pay with PhonePe</b></p>
-
-<img
-src="https://witjuwpraoycphopccnf.supabase.co/storage/v1/object/public/payment-qr%20bucket/WhatsApp%20Image%202026-10-31%20at%2006.38.34.jpeg"
-alt="CSINGH Store Payment QR"
-style="width:100%;max-width:280px;border-radius:10px">
-
-<p class="small">Scan using PhonePe and verify payment details before paying.</p>
-</div>
-
-<button class="primary" onclick="placeOrder()">Send order details on WhatsApp</button>
-
+<section class="hero">
+ <h1>Welcome to CSINGH Store</h1>
+ <p>Discover products you love. Shop easily, safely and conveniently.</p>
+ <a href="#products">SHOP NOW</a>
 </section>
+
+<main id="products">
+ <div class="section-head">
+  <h2>Best Picks For You</h2>
+  <select id="sort" onchange="draw()">
+   <option value="new">Newest first</option>
+   <option value="low">Price: Low to High</option>
+   <option value="high">Price: High to Low</option>
+  </select>
+ </div>
+ <p id="loadMessage" class="small">Loading products...</p>
+ <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+ <h3>CSINGH STORE</h3>
+ <p>Online Shopping Made Easy</p>
+ <p class="small">Contact the store for order and delivery assistance.</p>
+</footer>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)hideCart()">
+ <section class="panel">
+  <div class="panel-head">
+   <h2>My Cart & Checkout</h2>
+   <button onclick="hideCart()">✕</button>
+  </div>
+
+  <div id="items"></div>
+  <h3 id="total">Total: ₹0</h3>
+
+  <label>Full Name</label>
+  <input id="name" placeholder="Enter your name">
+
+  <label>Mobile Number</label>
+  <input id="mobile" inputmode="numeric" maxlength="10" placeholder="10 digit mobile number">
+
+  <label>Delivery Address</label>
+  <textarea id="address" rows="3" placeholder="Full delivery address"></textarea>
+
+  <div class="qr">
+   <h3>CSINGH STORE</h3>
+   <p><b>Scan & Pay with PhonePe</b></p>
+   <img src="https://witjuwpraoycphopccnf.supabase.co/storage/v1/object/public/payment-qr%20bucket/WhatsApp%20Image%202026-10-31%20at%2006.38.34.jpeg" alt="Payment QR">
+   <p class="small">Check the recipient name and amount in your payment app before paying. Payment verification is manual.</p>
+  </div>
+
+  <button class="primary" id="placeOrderBtn" onclick="placeOrder()">PLACE ORDER</button>
+  <div id="result"></div>
+ </section>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-/* Paste the same Project URL and anon/publishable key used in admin.html.
-   Never use service_role/secret key in public browser code. */
-const SUPABASE_URL="https://witjuwpraoycphopccnf.supabase.co",SUPABASE_ANON_KEY="sb_publishable_pMs5gI4r1UW5F-cKuMvh1A_SiEIBltz";
-const STORE_WHATSAPP="91XXXXXXXXXX";const money=n=>"₹"+Number(n||0).toLocaleString("en-IN");const $=id=>document.getElementById(id);const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let db,products=[],cart=[];
-async function load(){if(SUPABASE_URL.startsWith("PASTE_")||SUPABASE_ANON_KEY.startsWith("PASTE_")){$("loadMessage").textContent="Supabase setup required: configure the URL and anon key in index.html.";return}db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let {data,error}=await db.from("products").select("id,name,description,price,category,image_url,stock,is_active").eq("is_active",true).order("created_at",{ascending:false});if(error){$("loadMessage").textContent="Could not load products: "+error.message;return}products=data||[];$("loadMessage").textContent=products.length?products.length+" product(s) available.":"No products yet.";draw()}
-function draw(){$("grid").innerHTML=products.map(p=>`<article class="card"><img src="${esc(p.image_url||"")}" alt="${esc(p.name)}"><div class="info"><h3>${esc(p.name)}</h3><p class="small">${esc(p.description||p.category||"")}</p><div class="price">${money(p.price)}</div><button class="add" onclick="add(${Number(p.id)})" ${Number(p.stock||0)<=0?"disabled":""}>${Number(p.stock||0)<=0?"Out of stock":"Add to cart"}</button></div></article>`).join("")}
-function add(id){let p=products.find(x=>Number(x.id)===id);if(!p)return;let x=cart.find(y=>y.id===id);x?x.qty++:cart.push({id,qty:1});showCart()}
-function showCart(){$("overlay").style.display="flex";refresh()}function hideCart(){$("overlay").style.display="none"}
-function refresh(){$("count").textContent=cart.reduce((s,x)=>s+x.qty,0);$("items").innerHTML=cart.length?cart.map(x=>{let p=products.find(y=>Number(y.id)===x.id);return `<div class="line"><span>${esc(p.name)} × ${x.qty}</span><b>${money(Number(p.price)*x.qty)}</b><button onclick="removeItem(${x.id})">Remove</button></div>`}).join(""):"Your cart is empty.";let total=cart.reduce((s,x)=>s+Number(products.find(p=>Number(p.id)===x.id).price)*x.qty,0);$("total").textContent="Total: "+money(total)}
-function removeItem(id){cart=cart.filter(x=>x.id!==id);refresh()}
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://witjuwpraoycphopccnf.supabase.co";
+const SUPABASE_ANON_KEY="sb_publishable_pMs5gI4r1UW5F-cKuMvh1A_SiEIBltz";
+
+const $=id=>document.getElementById(id);
+const money=n=>"₹"+Number(n||0).toLocaleString("en-IN");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let db,products=[],cart=[],category="All";
+
+async function load(){
+ try{
+  db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  const {data,error}=await db.from("products")
+   .select("id,name,description,price,category,image_url,stock,is_active,created_at")
+   .eq("is_active",true)
+   .order("created_at",{ascending:false});
+  if(error)throw error;
+  products=data||[];
+  $("loadMessage").textContent=products.length?products.length+" products available":"No products available yet.";
+  draw();
+ }catch(e){
+  $("loadMessage").textContent="Could not load products: "+e.message;
+ }
+}
+
+function chooseCategory(c,button){
+ category=c;
+ document.querySelectorAll(".categories button").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+ draw();
+}
+
+function draw(){
+ let list=products.filter(p=>{
+  const q=$("search").value.toLowerCase().trim();
+  const matchesSearch=(p.name+" "+(p.description||"")+" "+(p.category||"")).toLowerCase().includes(q);
+  const cat=(p.category||"").toLowerCase();
+  const matchesCategory=category==="All"||
+   (category==="Other"?true:cat.includes(category.toLowerCase()));
+  return matchesSearch&&matchesCategory;
+ });
+
+ const sort=$("sort").value;
+ if(sort==="low")list.sort((a,b)=>Number(a.price)-Number(b.price));
+ if(sort==="high")list.sort((a,b)=>Number(b.price)-Number(a.price));
+
+ $("grid").innerHTML=list.length?list.map(p=>`
+  <article class="card">
+   <div class="photo"><img src="${esc(p.image_url||"")}" alt="${esc(p.name)}"></div>
+   <div class="info">
+    <h3>${esc(p.name)}</h3>
+    <p class="desc">${esc(p.description||p.category||"")}</p>
+    <div class="price">${money(p.price)}</div>
+    <div class="stock">${Number(p.stock)>0?"In Stock":"Out of Stock"}</div>
+    <button class="add" onclick="add('${esc(p.id)}')" ${Number(p.stock)<=0?"disabled":""}>ADD TO CART</button>
+   </div>
+  </article>
+ `).join(""):'<div class="empty">No products found.</div>';
+}
+
+function add(id){
+ const p=products.find(x=>String(x.id)===String(id));
+ if(!p)return;
+ const item=cart.find(x=>String(x.id)===String(id));
+ if(item){
+  if(item.qty>=Number(p.stock))return alert("Available stock limit reached.");
+  item.qty++;
+ }else cart.push({id,qty:1});
+ refresh();
+ showCart();
+}
+
+function showCart(){
+ $("overlay").style.display="flex";
+ $("result").style.display="none";
+ refresh();
+}
+function hideCart(){$("overlay").style.display="none";}
+
+function refresh(){
+ $("count").textContent=cart.reduce((s,x)=>s+x.qty,0);
+ $("items").innerHTML=cart.length?cart.map(x=>{
+  const p=products.find(y=>String(y.id)===String(x.id));
+  return `<div class="line">
+   <span>${esc(p.name)} × ${x.qty}<br><b>${money(Number(p.price)*x.qty)}</b></span>
+   <span>
+    <button onclick="changeQty('${esc(x.id)}',-1)">−</button>
+    <button onclick="changeQty('${esc(x.id)}',1)">+</button>
+    <button onclick="removeItem('${esc(x.id)}')">Remove</button>
+   </span>
+  </div>`;
+ }).join(""):"Your cart is empty.";
+
+ const total=cart.reduce((s,x)=>{
+  const p=products.find(y=>String(y.id)===String(x.id));
+  return s+Number(p.price)*x.qty;
+ },0);
+ $("total").textContent="Total: "+money(total);
+}
+
+function changeQty(id,delta){
+ const item=cart.find(x=>String(x.id)===String(id));
+ const p=products.find(x=>String(x.id)===String(id));
+ if(!item||!p)return;
+ if(delta>0&&item.qty>=Number(p.stock))return alert("Available stock limit reached.");
+ item.qty+=delta;
+ if(item.qty<=0)removeItem(id);
+ else refresh();
+}
+function removeItem(id){
+ cart=cart.filter(x=>String(x.id)!==String(id));
+ refresh();
+}
+
 async function placeOrder(){
+ if(!cart.length)return alert("Your cart is empty.");
 
-  if(!cart.length){
-    return alert("Your cart is empty.");
-  }
+ const n=$("name").value.trim();
+ const m=$("mobile").value.trim();
+ const a=$("address").value.trim();
+ if(!n||!/^\d{10}$/.test(m)||!a)
+  return alert("Enter your name, valid 10-digit mobile and address.");
 
-  const n=$("name").value.trim();
-  const m=$("mobile").value.trim();
-  const a=$("address").value.trim();
+ for(const x of cart){
+  const p=products.find(y=>String(y.id)===String(x.id));
+  if(!p||x.qty>Number(p.stock))return alert("Stock changed. Please check your cart.");
+ }
 
-  if(!n || !/^\d{10}$/.test(m) || !a){
-    return alert("Enter your name, valid 10-digit mobile and address.");
-  }
+ const btn=$("placeOrderBtn");
+ btn.disabled=true;
+ btn.textContent="PLACING ORDER...";
 
-  const btn=$("placeOrderBtn");
-  btn.disabled=true;
-  btn.textContent="Placing order...";
+ try{
+  const items=cart.map(x=>{
+   const p=products.find(y=>String(y.id)===String(x.id));
+   return {product_id:p.id,name:p.name,price:Number(p.price),quantity:x.qty};
+  });
+  const total=items.reduce((s,x)=>s+x.price*x.quantity,0);
 
-  try {
+  const {error}=await db.from("orders").insert([{
+   customer_name:n,mobile:m,address:a,items:items,total:total,status:"Pending"
+  }]);
+  if(error)throw error;
 
-    const items=cart.map(x=>{
-      const p=products.find(y=>Number(y.id)===x.id);
-
-      return {
-        product_id:p.id,
-        name:p.name,
-        price:Number(p.price),
-        quantity:x.qty
-      };
-    });
-
-    const total=items.reduce(
-      (sum,item)=>sum+item.price*item.quantity,0
-    );
-
-    const {data,error}=await db.from("orders").insert([{
-      customer_name:n,
-      mobile:m,
-      address:a,
-      items:items,
-      total:total,
-      status:"Pending"
-    }]).select("id").single();
-
-    if(error){
-      throw error;
-    }
-
-    alert("Order placed successfully! Order ID: "+data.id);
-
-    cart=[];
-    $("name").value="";
-    $("mobile").value="";
-    $("address").value="";
-
-    refresh();
-    hideCart();
-
-  } catch(error) {
-
-    alert("Order failed: "+error.message);
-
-  } finally {
-
-    btn.disabled=false;
-    btn.textContent="Place Order";
-
-  }
+  $("result").style.display="block";
+  $("result").textContent="Order submitted successfully! Status: Pending. Payment verification is manual.";
+  cart=[];
+  $("name").value="";
+  $("mobile").value="";
+  $("address").value="";
+  refresh();
+ }catch(e){
+  alert("Order failed: "+e.message);
+ }finally{
+  btn.disabled=false;
+  btn.textContent="PLACE ORDER";
+ }
 }
 load();
-</script></body></html>
+</script>
+</body>
+</html>
