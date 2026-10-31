@@ -76,7 +76,10 @@ input,textarea{width:100%;padding:12px;border:1px solid #ccd2da;border-radius:5p
   <input id="search" placeholder="Search for products..." oninput="draw()">
   <button onclick="draw()">🔍</button>
  </div>
- <button class="action" onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button>
+ <div style="display:flex;gap:10px;align-items:center">
+<a href="./tracking.html" style="color:white;text-decoration:none;font-weight:bold">Track Order</a>
+<button class="action" onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button>
+</div>
 </header>
 
 <nav class="categories" id="categories">
