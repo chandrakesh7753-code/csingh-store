@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +15,7 @@ button{cursor:pointer}
 .search input{width:100%;padding:12px;border:0;border-radius:5px 0 0 5px;outline:none}
 .search button{border:0;background:#ffcf40;padding:0 18px;border-radius:0 5px 5px 0}
 .top button.action{background:white;color:#1768d4;border:0;padding:11px 15px;border-radius:5px;font-weight:bold}
+.track{color:white;text-decoration:none;font-weight:bold;white-space:nowrap}
 .categories{background:white;display:flex;justify-content:center;gap:25px;padding:16px;overflow:auto;box-shadow:0 2px 5px #0001}
 .categories button{border:0;background:none;font-weight:bold;white-space:nowrap;color:#333}
 .categories button.active{color:#1768d4}
@@ -28,8 +28,7 @@ main{padding:10px 14px 30px;max-width:1400px;margin:auto}
 .section-head h2{margin:0;font-size:21px}
 #sort{padding:9px;border:1px solid #ddd;border-radius:5px;background:white}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:12px}
-.card{background:white;border-radius:5px;overflow:hidden;box-shadow:0 1px 4px #0001;transition:.2s}
-.card:hover{box-shadow:0 5px 15px #0002}
+.card{background:white;border-radius:5px;overflow:hidden;box-shadow:0 1px 4px #0001}
 .photo{height:190px;padding:12px;display:flex;align-items:center;justify-content:center}
 .photo img{width:100%;height:100%;object-fit:contain}
 .info{padding:12px}
@@ -53,6 +52,7 @@ input,textarea{width:100%;padding:12px;border:1px solid #ccd2da;border-radius:5p
 .qr img{width:100%;max-width:250px;border-radius:6px}
 .small{font-size:12px;color:#697586;line-height:1.5}
 #result{display:none;background:#e9f7ed;padding:14px;margin-top:12px;border-radius:6px}
+.location-btn{background:#1768d4;color:white;border:0;border-radius:5px;padding:12px;width:100%;margin-top:8px}
 @media(max-width:600px){
  .top{padding:12px;gap:10px}
  .logo{font-size:22px}
@@ -76,10 +76,8 @@ input,textarea{width:100%;padding:12px;border:1px solid #ccd2da;border-radius:5p
   <input id="search" placeholder="Search for products..." oninput="draw()">
   <button onclick="draw()">🔍</button>
  </div>
- <div style="display:flex;gap:10px;align-items:center">
-<a href="./tracking.html" style="color:white;text-decoration:none;font-weight:bold">Track Order</a>
-<button class="action" onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button>
-</div>
+ <a class="track" href="./tracking.html">Track Order</a>
+ <button class="action" onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button>
 </header>
 
 <nav class="categories" id="categories">
@@ -114,6 +112,7 @@ input,textarea{width:100%;padding:12px;border:1px solid #ccd2da;border-radius:5p
 <footer>
  <h3>CSINGH STORE</h3>
  <p>Online Shopping Made Easy</p>
+ <p><a href="./tracking.html" style="color:white">Track Your Order</a></p>
  <p class="small">Contact the store for order and delivery assistance.</p>
 </footer>
 
@@ -127,20 +126,51 @@ input,textarea{width:100%;padding:12px;border:1px solid #ccd2da;border-radius:5p
   <div id="items"></div>
   <h3 id="total">Total: ₹0</h3>
 
-  <label>Full Name</label>
+  <label>Full Name *</label>
   <input id="name" placeholder="Enter your name">
 
-  <label>Mobile Number</label>
+  <label>Mobile Number *</label>
   <input id="mobile" inputmode="numeric" maxlength="10" placeholder="10 digit mobile number">
 
-  <label>Delivery Address</label>
-  <textarea id="address" rows="3" placeholder="Full delivery address"></textarea>
+  <h3>Delivery Address</h3>
+
+  <label>House Number / Village *</label>
+  <input id="house" placeholder="House number and village">
+
+  <label>Mohalla / Ward</label>
+  <input id="mohalla" placeholder="Mohalla or ward">
+
+  <label>Gram Panchayat</label>
+  <input id="panchayat" placeholder="Gram Panchayat">
+
+  <label>Post Office</label>
+  <input id="post" placeholder="Post office">
+
+  <label>Police Station</label>
+  <input id="thana" placeholder="Police station">
+
+  <label>Tehsil</label>
+  <input id="tehsil" placeholder="Tehsil">
+
+  <label>District *</label>
+  <input id="district" placeholder="District">
+
+  <label>State *</label>
+  <input id="state" value="Uttar Pradesh">
+
+  <label>PIN Code *</label>
+  <input id="pin" inputmode="numeric" maxlength="6" placeholder="6-digit PIN code">
+
+  <h3>Google Maps Location</h3>
+  <button type="button" class="location-btn" onclick="getLocation()">📍 Use My Current Location</button>
+  <p id="locationMessage" class="small">Location optional hai. Button dabakar permission dein.</p>
+  <a id="mapPreview" class="small" target="_blank" rel="noopener" style="display:none">View selected location on Google Maps</a>
 
   <div class="qr">
    <h3>CSINGH STORE</h3>
    <p><b>Scan & Pay with PhonePe</b></p>
    <img src="https://witjuwpraoycphopccnf.supabase.co/storage/v1/object/public/payment-qr%20bucket/WhatsApp%20Image%202026-10-31%20at%2006.38.34.jpeg" alt="Payment QR">
-   <p class="small">Check the recipient name and amount in your payment app before paying. Payment verification is manual.</p>
+   <p class="small">Check recipient name and amount in your payment app before paying. Payment verification is manual.</p>
   </div>
 
   <button class="primary" id="placeOrderBtn" onclick="placeOrder()">PLACE ORDER</button>
@@ -158,6 +188,7 @@ const money=n=>"₹"+Number(n||0).toLocaleString("en-IN");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 let db,products=[],cart=[],category="All";
+let customerLocation=null;
 
 async function load(){
  try{
@@ -187,15 +218,12 @@ function draw(){
   const q=$("search").value.toLowerCase().trim();
   const matchesSearch=(p.name+" "+(p.description||"")+" "+(p.category||"")).toLowerCase().includes(q);
   const cat=(p.category||"").toLowerCase();
-  const matchesCategory=category==="All"||
-   (category==="Other"?true:cat.includes(category.toLowerCase()));
+  const matchesCategory=category==="All"||(category==="Other"?true:cat.includes(category.toLowerCase()));
   return matchesSearch&&matchesCategory;
  });
-
  const sort=$("sort").value;
  if(sort==="low")list.sort((a,b)=>Number(a.price)-Number(b.price));
  if(sort==="high")list.sort((a,b)=>Number(b.price)-Number(a.price));
-
  $("grid").innerHTML=list.length?list.map(p=>`
   <article class="card">
    <div class="photo"><img src="${esc(p.image_url||"")}" alt="${esc(p.name)}"></div>
@@ -242,7 +270,6 @@ function refresh(){
    </span>
   </div>`;
  }).join(""):"Your cart is empty.";
-
  const total=cart.reduce((s,x)=>{
   const p=products.find(y=>String(y.id)===String(x.id));
   return s+Number(p.price)*x.qty;
@@ -259,9 +286,32 @@ function changeQty(id,delta){
  if(item.qty<=0)removeItem(id);
  else refresh();
 }
+
 function removeItem(id){
  cart=cart.filter(x=>String(x.id)!==String(id));
  refresh();
+}
+
+function getLocation(){
+ const message=$("locationMessage");
+ if(!navigator.geolocation){
+  message.textContent="This browser does not support location.";
+  return;
+ }
+ message.textContent="Getting your location...";
+ navigator.geolocation.getCurrentPosition(position=>{
+  customerLocation={
+   lat:position.coords.latitude,
+   lng:position.coords.longitude
+  };
+  const url="https://www.google.com/maps?q="+customerLocation.lat+","+customerLocation.lng;
+  $("mapPreview").href=url;
+  $("mapPreview").style.display="inline-block";
+  message.textContent="Location captured. You can open the map link to check it.";
+ },error=>{
+  customerLocation=null;
+  message.textContent="Location not available. Allow location permission or enter address manually.";
+ },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
 }
 
 async function placeOrder(){
@@ -269,9 +319,34 @@ async function placeOrder(){
 
  const n=$("name").value.trim();
  const m=$("mobile").value.trim();
- const a=$("address").value.trim();
- if(!n||!/^\d{10}$/.test(m)||!a)
-  return alert("Enter your name, valid 10-digit mobile and address.");
+
+ const fields=[
+  ["House / Village",$("house").value],
+  ["Mohalla / Ward",$("mohalla").value],
+  ["Gram Panchayat",$("panchayat").value],
+  ["Post Office",$("post").value],
+  ["Police Station",$("thana").value],
+  ["Tehsil",$("tehsil").value],
+  ["District",$("district").value],
+  ["State",$("state").value],
+  ["PIN Code",$("pin").value]
+ ];
+
+ if(!n||!/^\d{10}$/.test(m)||
+    !$("house").value.trim()||
+    !$("district").value.trim()||
+    !$("state").value.trim()||
+    !/^\d{6}$/.test($("pin").value.trim())){
+  return alert("Please fill name, valid mobile, house/village, district, state and 6-digit PIN code.");
+ }
+
+ const address=fields
+  .filter(([label,value])=>value.trim())
+  .map(([label,value])=>label+": "+value.trim())
+  .join("\n")+
+  (customerLocation
+   ?"\nGoogle Maps: https://www.google.com/maps?q="+customerLocation.lat+","+customerLocation.lng
+   :"");
 
  for(const x of cart){
   const p=products.find(y=>String(y.id)===String(x.id));
@@ -283,23 +358,34 @@ async function placeOrder(){
  btn.textContent="PLACING ORDER...";
 
  try{
-  const items=cart.map(x=>{
+  const orderItems=cart.map(x=>{
    const p=products.find(y=>String(y.id)===String(x.id));
    return {product_id:p.id,name:p.name,price:Number(p.price),quantity:x.qty};
   });
-  const total=items.reduce((s,x)=>s+x.price*x.quantity,0);
+  const total=orderItems.reduce((s,x)=>s+x.price*x.quantity,0);
 
-  const {error}=await db.from("orders").insert([{
-   customer_name:n,mobile:m,address:a,items:items,total:total,status:"Pending"
-  }]);
+  const {data,error}=await db.from("orders").insert([{
+   customer_name:n,
+   mobile:m,
+   address:address,
+   items:orderItems,
+   total:total,
+   status:"Pending"
+  }]).select("id").single();
+
   if(error)throw error;
 
   $("result").style.display="block";
-  $("result").textContent="Order submitted successfully! Status: Pending. Payment verification is manual.";
+  $("result").innerHTML="Order submitted successfully!<br>Order ID: <b>"+esc(data.id)+"</b><br>Status: Pending. Payment verification is manual.<br><a href='./tracking.html'>Track your order</a>";
+
   cart=[];
   $("name").value="";
   $("mobile").value="";
-  $("address").value="";
+  ["house","mohalla","panchayat","post","thana","tehsil","district","pin"].forEach(id=>$(id).value="");
+  $("state").value="Uttar Pradesh";
+  customerLocation=null;
+  $("locationMessage").textContent="Location optional hai. Button dabakar permission dein.";
+  $("mapPreview").style.display="none";
   refresh();
  }catch(e){
   alert("Order failed: "+e.message);
@@ -308,6 +394,7 @@ async function placeOrder(){
   btn.textContent="PLACE ORDER";
  }
 }
+
 load();
 </script>
 </body>
