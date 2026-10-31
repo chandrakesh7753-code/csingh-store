@@ -5,15 +5,42 @@
 <header><div class="logo">CSINGH</div><button class="cart" onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button></header>
 <section class="hero"><h1>Shop smart. Shop CSINGH.</h1><p>Discover our collection and order in a few easy steps. Your store, your style.</p><a href="#products">Explore products</a></section>
 <main id="products"><h2>Featured products</h2><p id="loadMessage" class="small">Loading products…</p><div class="grid" id="grid"></div></main><footer><b>CSINGH</b><br>Online Store ·</footer>
-<div class="overlay" id="overlay" onclick="if(event.target===this)hideCart()"><section class="panel"><div style="display:flex;justify-content:space-between"><h2>Checkout</h2><button onclick="hideCart()">×</button></div><div id="items"></div><h3 id="total">Total: ₹0</h3><label>Full name</label><input id="name" placeholder="Your name"><label>Mobile number</label><input id="mobile" placeholder="10-digit mobile number"><label>Delivery address</label><textarea id="address"></textarea><<div style="text-align:center;margin:20px 0;padding:18px;background:#f5f7fa;border-radius:12px">
+<div class="overlay" id="overlay" onclick="if(event.target===this)hideCart()">
+<section class="panel">
+
+<div style="display:flex;justify-content:space-between">
+<h2>Checkout</h2>
+<button onclick="hideCart()">×</button>
+</div>
+
+<div id="items"></div>
+<h3 id="total">Total: ₹0</h3>
+
+<label>Full name</label>
+<input id="name" placeholder="Your name">
+
+<label>Mobile number</label>
+<input id="mobile" placeholder="10-digit mobile number">
+
+<label>Delivery address</label>
+<textarea id="address"></textarea>
+
+<div style="text-align:center;margin:20px 0;padding:18px;background:#f5f7fa;border-radius:12px">
 <h3 style="color:#14243d">CSINGH STORE</h3>
 <p><b>Scan & Pay with PhonePe</b></p>
+
 <img
 src="https://witjuwpraoycphopccnf.supabase.co/storage/v1/object/public/payment-qr%20bucket/WhatsApp%20Image%202026-10-31%20at%2006.38.34.jpeg"
 alt="CSINGH Store Payment QR"
 style="width:100%;max-width:280px;border-radius:10px">
+
 <p class="small">Scan using PhonePe and verify payment details before paying.</p>
-</div>><button class="primary" onclick="placeOrder()">Send order details on WhatsApp</button></section></div>
+</div>
+
+<button class="primary" onclick="placeOrder()">Send order details on WhatsApp</button>
+
+</section>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 /* Paste the same Project URL and anon/publishable key used in admin.html.
    Never use service_role/secret key in public browser code. */
