@@ -4,7 +4,7 @@
 </style></head><body>
 <header><div class="logo">CSINGH</div><button class="cart" onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button></header>
 <section class="hero"><h1>Shop smart. Shop CSINGH.</h1><p>Discover our collection and order in a few easy steps. Your store, your style.</p><a href="#products">Explore products</a></section>
-<main id="products"><h2>Featured products</h2><p id="loadMessage" class="small">Loading products…</p><div class="grid" id="grid"></div></main><footer><b>CSINGH</b><br>Online Store · <a href="./admin.html" style="color:white">Admin</a></footer>
+<main id="products"><h2>Featured products</h2><p id="loadMessage" class="small">Loading products…</p><div class="grid" id="grid"></div></main><footer><b>CSINGH</b><br>Online Store ·</footer>
 <div class="overlay" id="overlay" onclick="if(event.target===this)hideCart()"><section class="panel"><div style="display:flex;justify-content:space-between"><h2>Checkout</h2><button onclick="hideCart()">×</button></div><div id="items"></div><h3 id="total">Total: ₹0</h3><label>Full name</label><input id="name" placeholder="Your name"><label>Mobile number</label><input id="mobile" placeholder="10-digit mobile number"><label>Delivery address</label><textarea id="address"></textarea><p class="small">UPI payment and order confirmation need to be configured separately.</p><button class="primary" onclick="placeOrder()">Send order details on WhatsApp</button></section></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 /* Paste the same Project URL and anon/publishable key used in admin.html.
