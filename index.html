@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 /* Paste the same Project URL and anon/publishable key used in admin.html.
    Never use service_role/secret key in public browser code. */
-const SUPABASE_URL="PASTE_YOUR_SUPABASE_PROJECT_URL",SUPABASE_ANON_KEY="PASTE_YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL="https://witjuwpraoycphopccnf.supabase.co",SUPABASE_ANON_KEY="sb_publishable_pMs5gI4r1UW5F-cKuMvh1A_SiEIBltz";
 const STORE_WHATSAPP="91XXXXXXXXXX";const money=n=>"₹"+Number(n||0).toLocaleString("en-IN");const $=id=>document.getElementById(id);const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let db,products=[],cart=[];
 async function load(){if(SUPABASE_URL.startsWith("PASTE_")||SUPABASE_ANON_KEY.startsWith("PASTE_")){$("loadMessage").textContent="Supabase setup required: configure the URL and anon key in index.html.";return}db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let {data,error}=await db.from("products").select("id,name,description,price,category,image_url,stock,is_active").eq("is_active",true).order("created_at",{ascending:false});if(error){$("loadMessage").textContent="Could not load products: "+error.message;return}products=data||[];$("loadMessage").textContent=products.length?products.length+" product(s) available.":"No products yet.";draw()}
