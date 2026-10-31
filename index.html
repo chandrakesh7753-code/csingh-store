@@ -1,12 +1,14 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CSINGH Store</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f1f3f6;color:#222;font-family:Arial}
+body{margin:0;background:#f1f3f6;color:#222;font-family:Arial,sans-serif}
 button,input,select{font:inherit}
 button{cursor:pointer}
 .top{background:#1768d4;color:white;padding:12px 5%;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
@@ -16,22 +18,24 @@ button{cursor:pointer}
 .search button{border:0;padding:0 16px}
 .track{color:white}
 .categories{display:flex;gap:20px;overflow:auto;background:white;padding:15px;justify-content:center}
-.categories button{border:0;background:none}
+.categories button{border:0;background:none;padding:7px}
+.categories button.active{color:#1768d4;font-weight:bold;border-bottom:2px solid #1768d4}
 .hero{margin:14px;padding:30px;background:linear-gradient(110deg,#0c4da2,#3988ed);color:white;border-radius:7px}
 main{max-width:1300px;margin:auto;padding:12px}
-.head{display:flex;justify-content:space-between;background:white;padding:14px;margin-bottom:12px}
+.head{display:flex;justify-content:space-between;gap:10px;background:white;padding:14px;margin-bottom:12px;align-items:center}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
-.card{background:white;padding:12px}
-.photo{height:175px;display:flex;justify-content:center}
+.card{background:white;padding:12px;border-radius:5px}
+.photo{height:175px;display:flex;justify-content:center;align-items:center}
 .photo img{max-width:100%;max-height:100%;object-fit:contain}
 .price{font-weight:bold;font-size:19px}
 .add,.primary,.loc{background:#1768d4;color:white;border:0;border-radius:5px;padding:12px;width:100%;margin-top:9px}
+button:disabled{opacity:.5;cursor:not-allowed}
 .overlay{display:none;position:fixed;inset:0;background:#0009;z-index:5;align-items:center;justify-content:center;padding:10px}
 .panel{background:white;width:min(570px,100%);max-height:95vh;overflow:auto;padding:18px;border-radius:9px}
 .panelhead{display:flex;justify-content:space-between;align-items:center}
 .panelhead button{border:0;padding:8px}
 .line{display:flex;justify-content:space-between;border-bottom:1px solid #ddd;padding:10px 0;gap:8px}
-.line button{border:0;padding:6px}
+.line button{border:0;padding:7px}
 .field{margin:10px 0}
 .field label{display:block;font-weight:bold;margin-bottom:5px}
 .field input,.field select{width:100%;padding:12px;border:1px solid #ccd2da;border-radius:5px}
@@ -39,7 +43,9 @@ main{max-width:1300px;margin:auto;padding:12px}
 .locbox{border:1px solid #dce3ed;padding:12px;border-radius:7px;margin:12px 0}
 .qr{text-align:center;background:#f5f7fa;padding:12px;margin-top:15px}
 .qr img{max-width:230px;width:100%}
-#result{display:none;background:#e9f7ed;padding:12px;margin-top:12px}
+#result{display:none;background:#e9f7ed;padding:12px;margin-top:12px;line-height:1.7}
+.error{background:#fff0f0!important;color:#a00000}
+footer{background:#172337;color:white;text-align:center;padding:22px}
 @media(max-width:600px){
 .top{padding:12px}
 .search{order:3;flex-basis:100%}
@@ -49,26 +55,27 @@ main{max-width:1300px;margin:auto;padding:12px}
 }
 </style>
 </head>
+
 <body>
 
 <header class="top">
 <div class="logo">CSINGH</div>
 <div class="search">
-<input id="search" placeholder="Search products" oninput="draw()">
-<button onclick="draw()">🔍</button>
+<input id="search" placeholder="Search products">
+<button id="searchBtn">🔍</button>
 </div>
 <a class="track" href="./tracking.html">Track Order</a>
-<button onclick="showCart()">🛒 Cart (<span id="count">0</span>)</button>
+<button id="cartBtn">🛒 Cart (<span id="count">0</span>)</button>
 </header>
 
 <nav class="categories">
-<button onclick="chooseCategory('All',this)" class="active">All</button>
-<button onclick="chooseCategory('Women',this)">Women</button>
-<button onclick="chooseCategory('Men',this)">Men</button>
-<button onclick="chooseCategory('Kids',this)">Kids</button>
-<button onclick="chooseCategory('Electronics',this)">Electronics</button>
-<button onclick="chooseCategory('Home',this)">Home</button>
-<button onclick="chooseCategory('Other',this)">Other</button>
+<button class="active" data-category="All">All</button>
+<button data-category="Women">Women</button>
+<button data-category="Men">Men</button>
+<button data-category="Kids">Kids</button>
+<button data-category="Electronics">Electronics</button>
+<button data-category="Home">Home</button>
+<button data-category="Other">Other</button>
 </nav>
 
 <section class="hero">
@@ -80,7 +87,7 @@ main{max-width:1300px;margin:auto;padding:12px}
 <main id="products">
 <div class="head">
 <b>Best Picks For You</b>
-<select id="sort" onchange="draw()">
+<select id="sort">
 <option value="new">Newest first</option>
 <option value="low">Price: Low to High</option>
 <option value="high">Price: High to Low</option>
@@ -90,16 +97,17 @@ main{max-width:1300px;margin:auto;padding:12px}
 <div class="grid" id="grid"></div>
 </main>
 
-<footer style="background:#172337;color:white;text-align:center;padding:22px">
+<footer>
 <b>CSINGH STORE</b>
 <p><a href="./tracking.html" style="color:white">Track Your Order</a></p>
 </footer>
 
-<div class="overlay" id="overlay" onclick="if(event.target===this)hideCart()">
+<div class="overlay" id="overlay">
 <section class="panel">
+
 <div class="panelhead">
 <h2>Cart & Checkout</h2>
-<button onclick="hideCart()">✕</button>
+<button id="closeCart">✕</button>
 </div>
 
 <div id="items"></div>
@@ -119,8 +127,8 @@ main{max-width:1300px;margin:auto;padding:12px}
 
 <div class="locbox">
 <b>📍 Google Maps Location (Optional)</b>
-<button type="button" class="loc" onclick="getLocation()">Use My Current Location</button>
-<p id="locationMessage" class="small">Button dabakar browser prompt mein Allow karein. Location se milne wali address details auto-fill hongi; missing details manually check karein.</p>
+<button type="button" class="loc" id="locationBtn">Use My Current Location</button>
+<p id="locationMessage" class="small">Allow location permission to fill available address details automatically.</p>
 <a id="mapPreview" target="_blank" rel="noopener" style="display:none">Open location in Google Maps</a>
 </div>
 
@@ -163,8 +171,8 @@ main{max-width:1300px;margin:auto;padding:12px}
 </div>
 
 <div class="field">
-<label>Nearby famous place / shop / school (Optional)</label>
-<input id="landmark" placeholder="Nearby landmark">
+<label>Nearby landmark (Optional)</label>
+<input id="landmark" placeholder="Nearby shop / school">
 </div>
 
 <div class="field">
@@ -178,374 +186,521 @@ main{max-width:1300px;margin:auto;padding:12px}
 <div id="qrBox" class="qr" style="display:none">
 <b>Scan & Pay with PhonePe</b><br>
 <img src="https://witjuwpraoycphopccnf.supabase.co/storage/v1/object/public/payment-qr%20bucket/WhatsApp%20Image%202026-10-31%20at%2006.38.34.jpeg" alt="PhonePe QR">
-<p class="small">Payment is manually verified. Prepaid order will remain Payment Verification Pending until checked.</p>
+<p class="small">Payment will be manually verified. Prepaid orders remain pending until verification.</p>
 </div>
 
-<button class="primary" id="placeOrderBtn" onclick="placeOrder()">PLACE ORDER</button>
+<button class="primary" id="placeOrderBtn">PLACE ORDER</button>
 <div id="result"></div>
+
 </section>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+"use strict";
 
-const SUPABASE_URL="https://witjuwpraoycphopccnf.supabase.co";
-const SUPABASE_ANON_KEY="sb_publishable_pMs5gI4r1UW5F-cKuMvh1A_SiEIBltz";
+/* SUPABASE CONNECTION */
 
-const $=id=>document.getElementById(id);
-const money=n=>"₹"+Number(n||0).toLocaleString("en-IN");
+const SUPABASE_URL = "https://witjuwpraoycphopccnf.supabase.co";
 
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({
-"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-}[c]));
+const SUPABASE_ANON_KEY = "sb_publishable_pMs5gI4r1UW5F-cKuMvh1A_SiEIBltz";
 
-let db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-let products=[],cart=[],category="All",customerLocation=null;
-
-async function load(){
-try{
-let {data,error}=await db.from("products")
-.select("id,name,description,price,category,image_url,stock,is_active,created_at")
-.eq("is_active",true)
-.order("created_at",{ascending:false});
-
-if(error)throw error;
-
-products=data||[];
-$("loadMessage").textContent=products.length
-?products.length+" products available"
-:"No products available yet.";
-draw();
-
-}catch(e){
-$("loadMessage").textContent="Could not load products: "+e.message;
-}
-}
-
-function chooseCategory(c,b){
-category=c;
-document.querySelectorAll(".categories button").forEach(x=>x.classList.remove("active"));
-b.classList.add("active");
-draw();
-}
-
-function draw(){
-let q=$("search").value.toLowerCase().trim();
-
-let list=products.filter(p=>
-(p.name+" "+(p.description||"")+" "+(p.category||"")).toLowerCase().includes(q)&&
-(category==="All"||category==="Other"||(p.category||"").toLowerCase().includes(category.toLowerCase()))
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
 );
 
-if($("sort").value==="low")list.sort((a,b)=>a.price-b.price);
-if($("sort").value==="high")list.sort((a,b)=>b.price-a.price);
+const $ = id => document.getElementById(id);
 
-$("grid").innerHTML=list.length?list.map(p=>`
-<article class="card">
-<div class="photo">
-<img src="${esc(p.image_url||"")}" alt="${esc(p.name)}">
-</div>
-<h3>${esc(p.name)}</h3>
-<p>${esc(p.description||p.category||"")}</p>
-<div class="price">${money(p.price)}</div>
-<p>${Number(p.stock)>0?"In Stock":"Out of Stock"}</p>
-<button class="add" onclick="add('${esc(p.id)}')" ${Number(p.stock)<=0?"disabled":""}>ADD TO CART</button>
-</article>
-`).join(""):'<p>No products found.</p>';
+const money = n =>
+  "₹" + Number(n || 0).toLocaleString("en-IN");
+
+const esc = value =>
+  String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[c]);
+
+let products = [];
+let cart = [];
+let category = "All";
+let customerLocation = null;
+
+/* LOAD PRODUCTS */
+
+async function loadProducts() {
+  $("loadMessage").textContent = "Loading products...";
+
+  try {
+    const { data, error } = await db
+      .from("products")
+      .select("id,name,description,price,category,image_url,stock,is_active,created_at")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    products = data || [];
+
+    $("loadMessage").textContent =
+      products.length
+        ? products.length + " products available"
+        : "No products available yet.";
+
+    draw();
+
+  } catch (e) {
+    console.error("PRODUCT ERROR:", e);
+    $("loadMessage").textContent =
+      "Products loading failed: " + e.message;
+  }
 }
 
-function add(id){
-let p=products.find(x=>String(x.id)===String(id));
-if(!p)return;
+/* CATEGORY */
 
-let i=cart.find(x=>String(x.id)===String(id));
+document.querySelectorAll(".categories button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    category = btn.dataset.category;
 
-if(i){
-if(i.qty>=Number(p.stock))return alert("Stock limit reached");
-i.qty++;
-}else{
-cart.push({id,qty:1});
-}
+    document.querySelectorAll(".categories button")
+      .forEach(b => b.classList.remove("active"));
 
-refresh();
-showCart();
-}
-
-function showCart(){
-$("overlay").style.display="flex";
-$("result").style.display="none";
-refresh();
-}
-
-function hideCart(){
-$("overlay").style.display="none";
-}
-
-function refresh(){
-$("count").textContent=cart.reduce((s,x)=>s+x.qty,0);
-
-$("items").innerHTML=cart.length?cart.map(x=>{
-let p=products.find(y=>String(y.id)===String(x.id));
-return `
-<div class="line">
-<span>${esc(p.name)} × ${x.qty}<br><b>${money(p.price*x.qty)}</b></span>
-<span>
-<button onclick="changeQty('${esc(x.id)}',-1)">−</button>
-<button onclick="changeQty('${esc(x.id)}',1)">+</button>
-<button onclick="removeItem('${esc(x.id)}')">Remove</button>
-</span>
-</div>`;
-}).join(""):"Your cart is empty.";
-
-let t=cart.reduce((s,x)=>s+Number(products.find(y=>String(y.id)===String(x.id))?.price||0)*x.qty,0);
-$("total").textContent="Total: "+money(t);
-}
-
-function changeQty(id,d){
-let i=cart.find(x=>String(x.id)===String(id));
-let p=products.find(x=>String(x.id)===String(id));
-if(!i||!p)return;
-if(d>0&&i.qty>=Number(p.stock))return alert("Stock limit reached");
-i.qty+=d;
-if(i.qty<=0)removeItem(id);
-else refresh();
-}
-
-function removeItem(id){
-cart=cart.filter(x=>String(x.id)!==String(id));
-refresh();
-}
-
-$("payment").addEventListener("change",()=>
-$("qrBox").style.display=$("payment").value==="Prepaid"?"block":"none"
-);
-
-async function getLocation(){
-
-const m=$("locationMessage");
-const btn=document.querySelector(".loc");
-
-if(!navigator.geolocation){
-m.textContent="Is browser mein location support nahi hai. Address manually bharein.";
-return;
-}
-
-if(!window.isSecureContext){
-m.textContent="Location ke liye website HTTPS par kholna zaroori hai.";
-return;
-}
-
-btn.disabled=true;
-btn.textContent="Getting location…";
-m.textContent="Phone ke location permission prompt par Allow dabayein…";
-
-navigator.geolocation.getCurrentPosition(async pos=>{
-
-customerLocation={
-lat:pos.coords.latitude,
-lng:pos.coords.longitude
-};
-
-$("mapPreview").href=`https://www.google.com/maps?q=${customerLocation.lat},${customerLocation.lng}`;
-$("mapPreview").style.display="inline-block";
-
-m.textContent="Location mil gayi. Address details la rahe hain…";
-
-const put=(id,value)=>{
-if(value!==undefined&&value!==null&&String(value).trim())
-$(id).value=String(value).trim();
-};
-
-const first=(...v)=>v.find(x=>x!==undefined&&x!==null&&String(x).trim())||"";
-
-try{
-
-let a={},display="";
-
-try{
-const r=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&localityLanguage=en`);
-
-if(!r.ok)throw Error("Address lookup failed");
-
-a=await r.json();
-display=a.locality||a.city||a.principalSubdivision||"";
-
-}catch(primaryError){
-
-const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&zoom=18&addressdetails=1`);
-
-if(!r.ok)throw Error("Address service unavailable");
-
-const j=await r.json();
-a=j.address||{};
-display=j.display_name||"";
-}
-
-const road=first(a.road,a.street,a.streetName,a.neighbourhood,a.suburb,a.locality,display.split(",")[0]);
-
-const house=first(a.house_number,a.house,a.building,a.residential,a.road,a.street,road);
-
-const city=first(a.village,a.town,a.city,a.locality,a.hamlet,a.suburb);
-
-const district=first(a.district,a.county,a.state_district,a.principalSubdivision,a.localityInfo?.administrative?.[1]?.name);
-
-const stateName=first(a.state,a.principalSubdivision);
-
-put("house",house);
-put("area",road);
-put("pin",first(a.postcode,a.postalCode));
-put("city",city);
-put("district",district);
-
-if(stateName){
-const stateSelect=$("state");
-
-const option=[...stateSelect.options].find(o=>
-o.value.toLowerCase()===stateName.toLowerCase()||
-o.text.toLowerCase()===stateName.toLowerCase()||
-(stateName.toLowerCase().includes("uttar pradesh")&&o.text==="Uttar Pradesh")
-);
-
-if(option)stateSelect.value=option.value;
-else stateSelect.value="Other";
-}
-
-const missing=["house","area","pin","city","district","state"].filter(id=>!$(id).value.trim());
-
-m.textContent=missing.length
-?"Location mil gayi. Kuch details map se nahi mili ("+missing.join(", ")+"). Inhe check karke manually bharein."
-:"Address ke available boxes fill ho gaye. Submit se pehle house/area/pincode check kar lein.";
-
-}catch(e){
-
-m.textContent="Map pin mil gaya, lekin address service se details nahi aayi. Map link kholkar address manually bharein.";
-
-}finally{
-
-btn.disabled=false;
-btn.textContent="Use My Current Location";
-
-}
-
-},err=>{
-
-btn.disabled=false;
-btn.textContent="Use My Current Location";
-customerLocation=null;
-
-const msgs={
-1:"Location permission Allow karein, phir dobara try karein.",
-2:"Location abhi nahi mil rahi. Phone ka Location/GPS on karke try karein.",
-3:"Location lene mein der hui. Dobara try karein."
-};
-
-m.textContent=msgs[err.code]||"Location nahi mili. Address manually bharein.";
-
-},{enableHighAccuracy:true,timeout:25000,maximumAge:0});
-
-}
-
-async function placeOrder(){
-
-if(!cart.length)return alert("Your cart is empty.");
-
-let n=$("name").value.trim();
-let m=$("mobile").value.trim();
-let house=$("house").value.trim();
-let area=$("area").value.trim();
-let pin=$("pin").value.trim();
-let city=$("city").value.trim();
-let district=$("district").value.trim();
-let state=$("state").value.trim();
-let landmark=$("landmark").value.trim();
-let payment=$("payment").value;
-
-if(!n||!/^\d{10}$/.test(m)||!house||!area||!/^\d{6}$/.test(pin)||!city||!district||!state)
-return alert("Name, valid mobile, house, area, 6-digit PIN, city/village, district and state are required.");
-
-for(let x of cart){
-let p=products.find(y=>String(y.id)===String(x.id));
-if(!p||x.qty>Number(p.stock))
-return alert("Stock changed. Please check cart.");
-}
-
-let address=[
-`House/Building: ${house}`,
-`Road/Area: ${area}`,
-`PIN: ${pin}`,
-`City/Village: ${city}`,
-`District: ${district}`,
-`State: ${state}`,
-landmark?`Landmark: ${landmark}`:"",
-`Payment method: ${payment}`,
-customerLocation?`Google Maps: https://www.google.com/maps?q=${customerLocation.lat},${customerLocation.lng}`:""
-].filter(Boolean).join("\n");
-
-let btn=$("placeOrderBtn");
-btn.disabled=true;
-btn.textContent="PLACING ORDER...";
-
-try{
-
-let orderItems=cart.map(x=>{
-let p=products.find(y=>String(y.id)===String(x.id));
-return {
-product_id:p.id,
-name:p.name,
-price:Number(p.price),
-quantity:x.qty
-};
+    btn.classList.add("active");
+    draw();
+  });
 });
 
-let total=orderItems.reduce((s,x)=>s+x.price*x.quantity,0);
-let status=payment==="COD"?"COD Pending":"Payment Verification Pending";
+/* DISPLAY PRODUCTS */
 
-let {error}=await db.from("orders").insert([{
-customer_name:n,
-mobile:m,
-address,
-items:orderItems,
-total,
-status
-}]);
+function draw() {
+  const q = $("search").value.toLowerCase().trim();
 
-if(error)throw error;
+  let list = products.filter(p => {
+    const text = (
+      p.name + " " +
+      (p.description || "") + " " +
+      (p.category || "")
+    ).toLowerCase();
 
-$("result").style.display="block";
-$("result").innerHTML=`
-<b>Order submitted successfully!</b><br>
-Status: <b>${esc(status)}</b><br>
-Order details admin dashboard mein check karein.
-<a href="./tracking.html">Track order</a>
-`;
+    const matchesSearch = text.includes(q);
 
-cart=[];
+    const matchesCategory =
+      category === "All" ||
+      (p.category || "").toLowerCase().includes(category.toLowerCase());
 
-["name","mobile","house","area","pin","city","district","landmark"].forEach(id=>$(id).value="");
+    return matchesSearch && matchesCategory;
+  });
 
-$("state").value="";
-$("payment").value="COD";
-$("qrBox").style.display="none";
-customerLocation=null;
-$("mapPreview").style.display="none";
-$("locationMessage").textContent="Location optional hai. Address manually bhi bhar sakte hain.";
+  if ($("sort").value === "low") {
+    list.sort((a,b) => Number(a.price)-Number(b.price));
+  }
 
-refresh();
+  if ($("sort").value === "high") {
+    list.sort((a,b) => Number(b.price)-Number(a.price));
+  }
 
-}catch(e){
-
-alert("Order failed: "+e.message);
-
-}finally{
-
-btn.disabled=false;
-btn.textContent="PLACE ORDER";
-
+  $("grid").innerHTML = list.length
+    ? list.map(p => `
+      <article class="card">
+        <div class="photo">
+          <img
+            src="${esc(p.image_url || "")}"
+            alt="${esc(p.name)}"
+            loading="lazy"
+            onerror="this.style.display='none'"
+          >
+        </div>
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.description || p.category || "")}</p>
+        <div class="price">${money(p.price)}</div>
+        <p>${Number(p.stock) > 0 ? "In Stock" : "Out of Stock"}</p>
+        <button class="add"
+          onclick="addToCart('${esc(p.id)}')"
+          ${Number(p.stock) <= 0 ? "disabled" : ""}>
+          ADD TO CART
+        </button>
+      </article>
+    `).join("")
+    : "<p>No products found.</p>";
 }
 
+$("search").addEventListener("input", draw);
+$("searchBtn").addEventListener("click", draw);
+$("sort").addEventListener("change", draw);
+
+/* CART */
+
+function addToCart(id) {
+  const p = products.find(x => String(x.id) === String(id));
+
+  if (!p) return;
+
+  let item = cart.find(x => String(x.id) === String(id));
+
+  if (item) {
+    if (item.qty >= Number(p.stock)) {
+      alert("Stock limit reached");
+      return;
+    }
+    item.qty++;
+  } else {
+    cart.push({ id:p.id, qty:1 });
+  }
+
+  refresh();
+  showCart();
 }
 
-load();
+function showCart() {
+  $("overlay").style.display = "flex";
+  $("result").style.display = "none";
+  refresh();
+}
+
+function hideCart() {
+  $("overlay").style.display = "none";
+}
+
+$("cartBtn").addEventListener("click", showCart);
+$("closeCart").addEventListener("click", hideCart);
+
+$("overlay").addEventListener("click", e => {
+  if (e.target === $("overlay")) hideCart();
+});
+
+function changeQty(id, amount) {
+  const item = cart.find(x => String(x.id) === String(id));
+  const p = products.find(x => String(x.id) === String(id));
+
+  if (!item || !p) return;
+
+  if (amount > 0 && item.qty >= Number(p.stock)) {
+    alert("Stock limit reached");
+    return;
+  }
+
+  item.qty += amount;
+
+  if (item.qty <= 0) {
+    removeItem(id);
+  } else {
+    refresh();
+  }
+}
+
+function removeItem(id) {
+  cart = cart.filter(x => String(x.id) !== String(id));
+  refresh();
+}
+
+function refresh() {
+  $("count").textContent =
+    cart.reduce((s,x) => s + x.qty, 0);
+
+  $("items").innerHTML = cart.length
+    ? cart.map(x => {
+        const p = products.find(y => String(y.id) === String(x.id));
+
+        if (!p) return "";
+
+        return `
+          <div class="line">
+            <span>
+              ${esc(p.name)} × ${x.qty}<br>
+              <b>${money(Number(p.price)*x.qty)}</b>
+            </span>
+            <span>
+              <button onclick="changeQty('${esc(x.id)}',-1)">−</button>
+              <button onclick="changeQty('${esc(x.id)}',1)">+</button>
+              <button onclick="removeItem('${esc(x.id)}')">Remove</button>
+            </span>
+          </div>
+        `;
+      }).join("")
+    : "Your cart is empty.";
+
+  const total = cart.reduce((s,x) => {
+    const p = products.find(y => String(y.id) === String(x.id));
+    return s + (p ? Number(p.price)*x.qty : 0);
+  }, 0);
+
+  $("total").textContent = "Total: " + money(total);
+}
+
+/* PAYMENT */
+
+$("payment").addEventListener("change", () => {
+  $("qrBox").style.display =
+    $("payment").value === "Prepaid" ? "block" : "none";
+});
+
+/* LOCATION */
+
+async function getLocation() {
+  const msg = $("locationMessage");
+  const btn = $("locationBtn");
+
+  if (!navigator.geolocation) {
+    msg.textContent = "Location is not supported. Fill address manually.";
+    return;
+  }
+
+  if (!window.isSecureContext) {
+    msg.textContent = "Open website using HTTPS for location.";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Getting location...";
+
+  navigator.geolocation.getCurrentPosition(async pos => {
+    try {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+
+      customerLocation = { lat, lng };
+
+      $("mapPreview").href =
+        `https://www.google.com/maps?q=${lat},${lng}`;
+
+      $("mapPreview").style.display = "inline-block";
+
+      msg.textContent = "Location received. Finding address...";
+
+      let a = {};
+
+      try {
+        const response = await fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+        );
+
+        if (!response.ok) throw new Error("Address lookup failed");
+
+        a = await response.json();
+
+      } catch (e) {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+        );
+
+        if (!response.ok) throw new Error("Address service failed");
+
+        const data = await response.json();
+        a = data.address || {};
+      }
+
+      const first = (...values) =>
+        values.find(v => v && String(v).trim()) || "";
+
+      const put = (id, value) => {
+        if (value) $(id).value = String(value).trim();
+      };
+
+      const city = first(a.village,a.town,a.city,a.locality,a.hamlet,a.suburb);
+      const district = first(a.district,a.county,a.state_district,a.principalSubdivision);
+      const stateName = first(a.state,a.principalSubdivision);
+
+      put("house", first(a.house_number,a.building,a.road,a.street));
+      put("area", first(a.neighbourhood,a.suburb,a.road,a.street,a.locality));
+      put("pin", first(a.postcode,a.postalCode));
+      put("city", city);
+      put("district", district);
+
+      if (stateName) {
+        const option = [...$("state").options].find(o =>
+          o.text.toLowerCase() === stateName.toLowerCase() ||
+          o.value.toLowerCase() === stateName.toLowerCase()
+        );
+
+        $("state").value = option ? option.value : "Other";
+      }
+
+      const missing = [
+        "house","area","pin","city","district","state"
+      ].filter(id => !$(id).value.trim());
+
+      msg.textContent = missing.length
+        ? "Location found. Please manually fill: " + missing.join(", ")
+        : "Address filled. Please verify details before ordering.";
+
+    } catch (e) {
+      console.error("LOCATION ERROR:",e);
+      msg.textContent =
+        "Location found, but address lookup failed. Fill address manually.";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Use My Current Location";
+    }
+
+  }, err => {
+    customerLocation = null;
+    btn.disabled = false;
+    btn.textContent = "Use My Current Location";
+
+    msg.textContent =
+      err.code === 1
+        ? "Please allow location permission."
+        : err.code === 2
+        ? "Location unavailable. Turn on GPS."
+        : "Location timeout. Please try again.";
+
+  }, {
+    enableHighAccuracy:true,
+    timeout:25000,
+    maximumAge:0
+  });
+}
+
+$("locationBtn").addEventListener("click",getLocation);
+
+/* PLACE ORDER */
+
+async function placeOrder() {
+  if (!cart.length) {
+    alert("Your cart is empty.");
+    return;
+  }
+
+  const n = $("name").value.trim();
+  const m = $("mobile").value.trim();
+  const house = $("house").value.trim();
+  const area = $("area").value.trim();
+  const pin = $("pin").value.trim();
+  const city = $("city").value.trim();
+  const district = $("district").value.trim();
+  const state = $("state").value.trim();
+  const landmark = $("landmark").value.trim();
+  const payment = $("payment").value;
+
+  if (!n || !/^\d{10}$/.test(m) ||
+      !house || !area || !/^\d{6}$/.test(pin) ||
+      !city || !district || !state) {
+    alert("Please fill all required fields correctly.");
+    return;
+  }
+
+  const orderItems = [];
+
+  for (const x of cart) {
+    const p = products.find(y => String(y.id) === String(x.id));
+
+    if (!p || !Number.isFinite(Number(p.price)) ||
+        x.qty < 1 || x.qty > Number(p.stock)) {
+      alert("Product stock or price changed. Please check your cart.");
+      return;
+    }
+
+    orderItems.push({
+      product_id:p.id,
+      name:p.name,
+      price:Number(p.price),
+      quantity:x.qty
+    });
+  }
+
+  const total = orderItems.reduce(
+    (s,x) => s + x.price*x.quantity, 0
+  );
+
+  const status = payment === "COD"
+    ? "COD Pending"
+    : "Payment Verification Pending";
+
+  const address = [
+    `House/Building: ${house}`,
+    `Road/Area: ${area}`,
+    `PIN: ${pin}`,
+    `City/Village: ${city}`,
+    `District: ${district}`,
+    `State: ${state}`,
+    landmark ? `Landmark: ${landmark}` : "",
+    `Payment method: ${payment}`,
+    customerLocation
+      ? `Google Maps: https://www.google.com/maps?q=${customerLocation.lat},${customerLocation.lng}`
+      : ""
+  ].filter(Boolean).join("\n");
+
+  const btn = $("placeOrderBtn");
+  const result = $("result");
+
+  btn.disabled = true;
+  btn.textContent = "PLACING ORDER...";
+  result.style.display = "none";
+  result.classList.remove("error");
+
+  try {
+    const { data, error } = await db
+      .from("orders")
+      .insert({
+        customer_name:n,
+        mobile:m,
+        address:address,
+        items:orderItems,
+        total:total,
+        status:status
+      });
+
+    if (error) {
+      console.error("SUPABASE ORDER ERROR:",error);
+      throw error;
+    }
+
+    result.style.display = "block";
+    result.innerHTML = `
+      <b>Order submitted successfully!</b><br>
+      Status: ${esc(status)}<br>
+      Your order has been saved.<br>
+      <a href="./tracking.html">Track Order</a>
+    `;
+
+    cart = [];
+    refresh();
+
+    [
+      "name","mobile","house","area","pin",
+      "city","district","landmark"
+    ].forEach(id => $(id).value = "");
+
+    $("state").value = "";
+    $("payment").value = "COD";
+    $("qrBox").style.display = "none";
+
+    customerLocation = null;
+    $("mapPreview").style.display = "none";
+
+    $("locationMessage").textContent =
+      "Location optional hai. Address manually bhi bhar sakte hain.";
+
+  } catch (e) {
+    console.error("FULL ORDER ERROR:",e);
+
+    result.style.display = "block";
+    result.classList.add("error");
+
+    result.textContent =
+      "Order failed: " +
+      (e.message || "Unknown error") +
+      (e.code ? " | Code: " + e.code : "") +
+      (e.details ? " | Details: " + e.details : "") +
+      (e.hint ? " | Hint: " + e.hint : "");
+
+    alert(result.textContent);
+
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "PLACE ORDER";
+  }
+}
+
+$("placeOrderBtn").addEventListener("click",placeOrder);
+
+/* START WEBSITE */
+
+loadProducts();
 
 </script>
 </body>
