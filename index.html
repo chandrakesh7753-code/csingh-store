@@ -633,16 +633,14 @@ async function placeOrder() {
   result.classList.remove("error");
 
   try {
-    const { data, error } = await db
-      .from("orders")
-      .insert({
-        customer_name:n,
-        mobile:m,
-        address:address,
-        items:orderItems,
-        total:total,
-        status:status
-      });
+    const { data: orderId, error } = await db.rpc("submit_order", {
+      p_customer_name: n,
+      p_mobile: m,
+      p_address: address,
+      p_items: orderItems,
+      p_total: total,
+      p_status: status
+    });
 
     if (error) {
       console.error("SUPABASE ORDER ERROR:",error);
@@ -652,6 +650,7 @@ async function placeOrder() {
     result.style.display = "block";
     result.innerHTML = `
       <b>Order submitted successfully!</b><br>
+      Your Order ID: <b>#${esc(orderId)}</b><br>
       Status: ${esc(status)}<br>
       Your order has been saved.<br>
       <a href="./tracking.html">Track Order</a>
